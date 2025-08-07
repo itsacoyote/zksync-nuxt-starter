@@ -1,0 +1,16 @@
+caipNetwork
+NOTOK
+Nuxt
+nuxt
+nuxtjs
+reka
+reown
+sepolia
+tokentx
+txreceipt_status
+Viem
+viem
+vueuse
+Wagmi
+wagmi
+ZKsync

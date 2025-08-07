@@ -1,0 +1,5 @@
+"*.{js,ts,vue}":
+  - eslint
+"*.md":
+  - markdownlint-cli2
+  - cspell lint --quiet --no-must-find-files --files

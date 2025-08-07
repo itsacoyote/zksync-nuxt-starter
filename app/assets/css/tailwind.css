@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@theme {
+  --font-sans: 'Inria Sans', sans-serif;
+}
+
+html {
+  background-color: var(--color-base-200);
+  font-size: 16px;
+}
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));

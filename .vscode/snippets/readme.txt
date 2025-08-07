@@ -1,0 +1,1 @@
+Install the available snippets into your user settings in VSCode.

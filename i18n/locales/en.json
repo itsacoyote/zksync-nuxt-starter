@@ -1,0 +1,23 @@
+{
+  "nuxtSiteConfig": {
+    "name": "Starter Template",
+    "description": ""
+  },
+  "navigation": {
+    "transfers": "Transfer History",
+    "assets": "Assets",
+    "transactions": "Transactions"
+  },
+  "index": {
+    "header": "Account Summary"
+  },
+  "transfers": {
+    "header": "Transfers"
+  },
+  "assets": {
+    "header": "Assets"
+  },
+  "transactions": {
+    "header": "Transactions"
+  }
+}
