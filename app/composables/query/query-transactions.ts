@@ -50,5 +50,6 @@ export const useQueryTransactions = () => {
     ],
     queryFn: () => fetchBlockExplorerApiData<Transaction[]>(fetchTransactions),
     retry: blockExplorerApiRetry,
+    refetchInterval: 2 * 60 * 1000, // 2 minutes in milliseconds
   })
 }

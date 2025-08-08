@@ -4,9 +4,6 @@ import {
   hydrate, QueryClient, VueQueryPlugin,
 } from "@tanstack/vue-query"
 
-// Nuxt 3 app aliases
-import { defineNuxtPlugin } from "#imports"
-
 const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: 3000 } } })
 
 export default defineNuxtPlugin((nuxtApp) => {

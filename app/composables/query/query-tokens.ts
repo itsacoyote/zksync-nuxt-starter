@@ -55,6 +55,6 @@ export const useQueryTokens = () => {
     ],
     queryFn: fetchData,
     retry: blockExplorerApiRetry,
-    staleTime: 5 * 60 * 1000, // 5 minutes in milliseconds
+    refetchInterval: 5 * 60 * 1000, // 5 minutes in milliseconds
   })
 }

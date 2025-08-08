@@ -37,5 +37,7 @@ export const useQueryAssets = () => {
     // which includes ERC721s
     queryFn: () => fetchBlockExplorerApiData<TokenBalanceData[]>(fetchAssets).then(data => data.filter(token => token.TokenName !== "")).then(data => formatData(data)),
     retry: blockExplorerApiRetry,
+    refetchInterval: false,
+    staleTime: Infinity,
   })
 }

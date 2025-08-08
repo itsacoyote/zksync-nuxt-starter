@@ -43,6 +43,7 @@ export const useQueryTransfers = () => {
     queryFn: () => fetchBlockExplorerApiAddressData<Transfer[]>(fetchTransfers)
       .then(groupByTransactionHash),
     retry: blockExplorerApiRetry,
+    refetchInterval: 2 * 60 * 1000, // 2 minutes in milliseconds
   })
 }
 

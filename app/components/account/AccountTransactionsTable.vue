@@ -25,8 +25,18 @@
             <td>{{ formatShortAddress(transaction.from) }}</td>
             <td>{{ formatShortAddress(transaction.to) }}</td>
             <td>
-              <!-- TODO: get the basetoken symbol to display -->
               <CommonAmountTooltip :formatted-amount="formattedFee(transaction.fee)" />
+              <span
+                v-if="baseTokenData"
+                class="ml-2"
+              >
+                {{ baseTokenData.symbol }}
+                <NuxtImg
+                  v-if="baseTokenData"
+                  :src="baseTokenData.iconURL"
+                  class="inline-block h-4 w-4"
+                />
+              </span>
             </td>
           </tr>
         </template>
@@ -77,6 +87,8 @@ dayjs.extend(relativeTime)
 const {
   isPending, isFetching, data, error,
 } = useQueryTransactions()
+
+const { data: baseTokenData } = useQueryBaseToken()
 
 const formattedFee = (fee: bigint): [string, string] => {
   const formattedUnits = formatUnits(fee, 18)
