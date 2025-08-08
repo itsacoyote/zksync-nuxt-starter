@@ -11,11 +11,12 @@
     </div>
     <div class="drawer-side">
       <label
+        for="profile-drawer"
         aria-label="close sidebar"
         class="drawer-overlay"
         @click="appState.toggleProfileDrawer()"
       />
-      <ul class="bg-base-200 text-base-content min-h-full w-[100%] max-w-[430px] p-4">
+      <ul class="bg-base-200 text-base-content min-h-full w-[100%] md:max-w-[430px] p-4">
         <li class="flex flex-row justify-between mb-2">
           <button
             type="button"
