@@ -42,4 +42,9 @@ export type ZkSyncNetwork = {
    * can be bridged to it.
    */
   nativeTokenBridgingOnly?: boolean
+  /**
+   * Defines if the network
+   * supports ZKsync SSO
+   */
+  sso?: boolean
 }

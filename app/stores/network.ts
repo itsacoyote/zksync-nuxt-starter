@@ -10,6 +10,8 @@ export const useNetworkStore = defineStore("network", () => {
   const testnet = ref<boolean>(false)
   const activeNetwork = ref<ZkSyncNetwork>(config.defaultNetwork)
 
+  testnet.value = activeNetwork.value.testnet
+
   const activeNetworkL1 = computed<L1Network | null>(() => {
     const l1Network = activeNetwork.value.l1Network
     return isBoolean(l1Network) ? null : l1Network

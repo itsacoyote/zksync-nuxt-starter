@@ -34,6 +34,7 @@ export const zksyncSepolia: ZkSyncNetwork = {
     },
   },
   l1Network: l1Sepolia,
+  sso: true,
 }
 
 export const zksyncStaging: ZkSyncNetwork = {

@@ -10,7 +10,7 @@ export const customNetworks: ZkSyncNetwork[] = [
   zksyncGatewayTestnet,
 ]
 
-export const customDefaultNetwork: ZkSyncNetwork = zksyncMainnet
+export const customDefaultNetwork: ZkSyncNetwork = zksyncSepolia
 
 export const customMetadata = {
   name: "Custom Config",

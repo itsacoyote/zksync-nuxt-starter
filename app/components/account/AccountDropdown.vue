@@ -4,7 +4,7 @@
     <button
       v-else
       type="button"
-      class="btn btn-primary"
+      class="btn btn-soft"
       @click="appState.toggleProfileDrawer()"
     >
       <NuxtImg
