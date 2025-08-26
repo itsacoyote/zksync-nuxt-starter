@@ -31,9 +31,14 @@
             <div class="card-body flex items-center justify-between flex-row">
               <div>
                 <NuxtImg
-                  v-if="connections.length > 0"
+                  v-if="connections.length > 0 && connections[0]?.connector.icon"
                   :src="connections[0]!.connector.icon"
                   class="h-6 w-6 inline-block"
+                />
+                <Icon
+                  v-else
+                  name="fluent:wallet-20-regular"
+                  class="h-6 w-6 align-middle"
                 />
                 <span
                   v-if="address"

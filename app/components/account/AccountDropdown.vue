@@ -8,8 +8,13 @@
       @click="appState.toggleProfileDrawer()"
     >
       <NuxtImg
-        v-if="connections.length > 0"
+        v-if="connections[0]?.connector.icon"
         :src="connections[0]?.connector.icon"
+        class="h-6 w-6"
+      />
+      <Icon
+        v-else
+        name="fluent:wallet-20-regular"
         class="h-6 w-6"
       />
       {{ ensAccount && ensAccount.name ? ensAccount.name : formatShortAddress(address) }}
