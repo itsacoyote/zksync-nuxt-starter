@@ -12,7 +12,7 @@
       <slot />
     </template>
     <div
-      v-else
+      v-else-if="!hide"
       role="alert"
       class="alert alert-vertical sm:alert-horizontal"
     >
@@ -25,13 +25,17 @@
         <AccountConnectButton />
       </div>
     </div>
+    <div v-else />
   </template>
 </template>
 
 <script lang="ts" setup>
+defineProps<{ hide?: boolean }>()
+
 const { isConnected } = storeToRefs(useConnectorStore())
 
 const loading = ref<boolean>(true)
+let timeoutId: ReturnType<typeof setTimeout> | null = null
 
 /**
  * For first time loading of the site,
@@ -40,9 +44,15 @@ const loading = ref<boolean>(true)
  */
 onMounted(() => {
   if (!isConnected.value) {
-    setTimeout(() => loading.value = false, 800)
+    timeoutId = setTimeout(() => loading.value = false, 800)
   } else {
     loading.value = false
+  }
+})
+
+onBeforeUnmount(() => {
+  if (timeoutId) {
+    clearTimeout(timeoutId)
   }
 })
 </script>

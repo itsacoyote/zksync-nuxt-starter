@@ -8,7 +8,8 @@
       @click="appState.toggleProfileDrawer()"
     >
       <NuxtImg
-        :src="connections[0].connector.icon"
+        v-if="connections.length > 0"
+        :src="connections[0]?.connector.icon"
         class="h-6 w-6"
       />
       {{ ensAccount && ensAccount.name ? ensAccount.name : formatShortAddress(address) }}

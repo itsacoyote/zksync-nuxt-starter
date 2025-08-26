@@ -2,6 +2,7 @@ import { createAppKit } from "@reown/appkit/vue"
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi"
 import type { AppKitNetwork } from "@reown/appkit-common"
 import { isNil, uniq } from "es-toolkit"
+import { zksyncSsoConnector } from "zksync-sso-wagmi-connector"
 
 import { customAppKitConfig, customMetadata } from "~~/custom/app-config"
 
@@ -57,12 +58,6 @@ export const useConnectorConfig = () => {
       return acc
     }, [])
 
-  const allChainKeys = allChains.map(chain => chain.key)
-  const allChainKeysDedupe = uniq(allChainKeys)
-  if (allChainKeysDedupe.length !== allChainKeys.length) {
-    throw new Error("All defined networks must have unique key names.")
-  }
-
   const defaultNetwork = allChains.find(chain => chain.id === appConfig.defaultNetwork.id)
   if (isNil(defaultNetwork)) {
     throw new Error("Default network must be included in list of networks in appConfig.")
@@ -71,14 +66,29 @@ export const useConnectorConfig = () => {
     throw new Error("Default network cannot be an L1 network.")
   }
 
+  // Move defaultNetwork to the front of allChains
+  const allChainsOrdered = defaultNetwork
+    ? [
+      defaultNetwork,
+      ...allChains.filter(chain => chain.id !== defaultNetwork.id),
+    ]
+    : allChains
+
+  const allChainKeys = allChainsOrdered.map(chain => chain.key)
+  const allChainKeysDedupe = uniq(allChainKeys)
+  if (allChainKeysDedupe.length !== allChainKeys.length) {
+    throw new Error("All defined networks must have unique key names.")
+  }
+
   const wagmiAdapter = new WagmiAdapter({
-    networks: allChains,
+    networks: allChainsOrdered,
     projectId,
+    connectors: [ zksyncSsoConnector({ authServerUrl: "https://auth-test.zksync.dev/confirm" }) ],
   })
 
   createAppKit({
     adapters: [ wagmiAdapter ],
-    networks: allChains as unknown as [AppKitNetwork, ...AppKitNetwork[]],
+    networks: allChainsOrdered as unknown as [AppKitNetwork, ...AppKitNetwork[]],
     metadata: metadata,
     projectId,
     defaultNetwork: defaultNetwork,
@@ -86,7 +96,7 @@ export const useConnectorConfig = () => {
   })
 
   return {
-    allChains,
+    allChains: allChainsOrdered,
     wagmiAdapter,
   }
 }

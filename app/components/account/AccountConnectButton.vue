@@ -19,10 +19,12 @@
 <script setup lang="ts">
 const { open } = useAppKit()
 
+const networkData = useAppKitNetwork()
 const appKitState = useAppKitState()
 const opening = ref(false)
 const openModal = () => {
   opening.value = true
+  console.log("NETWORK DATA", networkData.value)
   open()
 }
 watch(() => appKitState.open, (state) => {
