@@ -86,14 +86,17 @@ export const useConnectorConfig = () => {
     connectors: [ zksyncSsoConnector({ authServerUrl: "https://auth-test.zksync.dev/confirm" }) ],
   })
 
-  createAppKit({
-    adapters: [ wagmiAdapter ],
-    networks: allChainsOrdered as unknown as [AppKitNetwork, ...AppKitNetwork[]],
-    metadata: metadata,
-    projectId,
-    defaultNetwork: defaultNetwork,
-    ...appKitConfiguration,
-  })
+  // Only create AppKit on client side to avoid SSR errors
+  if (import.meta.client) {
+    createAppKit({
+      adapters: [ wagmiAdapter ],
+      networks: allChainsOrdered as unknown as [AppKitNetwork, ...AppKitNetwork[]],
+      metadata: metadata,
+      projectId,
+      defaultNetwork: defaultNetwork,
+      ...appKitConfiguration,
+    })
+  }
 
   return {
     allChains: allChainsOrdered,
