@@ -82,15 +82,22 @@
         </li>
         <li class="mt-4">
           <div class="mb-4 px-2">
-            <label class="label">
-              <input
-                type="checkbox"
-                class="toggle toggle-success"
-                :checked="networkStore.testnet"
-                @change="networkStore.toggleTestnet()"
-              >
-              Display testnet networks
+            <label class="label text-sm text-base-content/70">
+              Network Group
             </label>
+            <select
+              :value="networkStore.activeGroupKey"
+              class="select w-full"
+              @change="(e) => networkStore.changeActiveGroup((e.target as HTMLSelectElement).value)"
+            >
+              <option
+                v-for="(group, key) in networkStore.visibleNetworkGroups"
+                :key="key"
+                :value="key"
+              >
+                {{ group.name }}
+              </option>
+            </select>
           </div>
           <CommonNetworkSelect class="w-full" />
         </li>

@@ -12,6 +12,9 @@
 </template>
 
 <script setup lang="ts">
-useConnectorStore()
-useAccountStore()
+// Initialize stores only on client side since they use Wagmi composables
+onMounted(() => {
+  useConnectorStore()
+  useAccountStore()
+})
 </script>

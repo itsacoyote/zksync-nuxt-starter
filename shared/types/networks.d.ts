@@ -48,3 +48,24 @@ export type ZkSyncNetwork = {
    */
   sso?: boolean
 }
+
+export type NetworkGroup = {
+  /**
+   * Display name for the network group
+   */
+  name: string
+  /**
+   * Description of the network group
+   */
+  description: string
+  /**
+   * Networks in this group. The first network is the default.
+   */
+  networks: ZkSyncNetwork[]
+  /**
+   * If true, this group won't be shown in the UI selector
+   */
+  hidden?: boolean
+}
+
+export type NetworkGroups = Record<string, NetworkGroup>

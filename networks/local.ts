@@ -24,6 +24,7 @@ export const zksyncAnvil: ZkSyncNetwork = {
   l1Network: {
     ...l1Sepolia,
     id: 31337,
+    key: "ethereum-anvil",
     name: "Ethereum Anvil",
   },
 }
@@ -45,6 +46,7 @@ export const zksyncDockerizedNode: ZkSyncNetwork = {
   l1Network: {
     ...l1Sepolia,
     id: 9,
+    key: "ethereum-local",
     name: "Ethereum Local Node",
     nativeCurrency: {
       name: "Ether", symbol: "ETH", decimals: 18,

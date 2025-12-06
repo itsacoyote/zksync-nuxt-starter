@@ -1,21 +1,49 @@
+import { zksyncAnvil, zksyncDockerizedNode } from "~~/networks/local"
 import {
-  zksyncGateway, zksyncGatewayTestnet, zksyncMainnet, zksyncSepolia,
+  zksyncGateway, zksyncGatewayTestnet, zksyncMainnet, zksyncSepolia, zksyncStaging,
 } from "~~/networks/zksync"
-import type { ZkSyncNetwork } from "~~/shared/types/networks"
+import type { NetworkGroups } from "~~/shared/types/networks"
 
-export const customNetworks: ZkSyncNetwork[] = [
+export const customNetworkGroups: NetworkGroups = {
+  mainnet: {
+    name: "Mainnet",
+    description: "Production networks",
+    networks: [
+      zksyncMainnet,
+      zksyncGateway,
+    ],
+  },
+  testnet: {
+    name: "Testnet",
+    description: "Test networks for development",
+    networks: [
+      zksyncSepolia,
+      zksyncGatewayTestnet,
+    ],
+  },
+  local: {
+    name: "Local",
+    description: "Local development networks",
+    networks: [
+      zksyncDockerizedNode,
+      zksyncAnvil,
+    ],
+  },
+  testing: {
+    name: "Testing",
+    description: "Internal testing networks",
+    networks: [ zksyncStaging ],
+    hidden: true,
+  },
+}
+
+// Specify which group should be the default on app load
+export const defaultGroupKey = "local"
+
+export const ssoNetworks = [
   zksyncMainnet,
   zksyncSepolia,
-  zksyncGateway,
-  zksyncGatewayTestnet,
 ]
-
-export const ssoNetworks: ZkSyncNetwork[] = [
-  zksyncMainnet,
-  zksyncSepolia,
-]
-
-export const customDefaultNetwork: ZkSyncNetwork = zksyncSepolia
 
 export const customMetadata = {
   name: "Custom Config",

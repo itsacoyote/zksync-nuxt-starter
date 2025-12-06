@@ -1,16 +1,59 @@
 import { isBoolean, isNil } from "es-toolkit"
 import { isObject } from "es-toolkit/compat"
 
-import type { L1Network, ZkSyncNetwork } from "~~/shared/types/networks"
+import type {
+  L1Network, NetworkGroups, ZkSyncNetwork,
+} from "~~/shared/types/networks"
 
 export const useNetworkStore = defineStore("network", () => {
   const config = useAppConfig()
-  const chains = useChains()
 
-  const testnet = ref<boolean>(false)
-  const activeNetwork = ref<ZkSyncNetwork>(config.defaultNetwork)
+  const networkGroups = computed<NetworkGroups>(() => {
+    return config.networkGroups
+  })
 
-  testnet.value = activeNetwork.value.testnet
+  const visibleNetworkGroups = computed<NetworkGroups>(() => {
+    // In non-production environments, show hidden groups for testing
+    const isDevelopment = import.meta.dev
+
+    return Object.fromEntries(Object.entries(networkGroups.value).filter(([
+      _key,
+      group,
+    ]) => isDevelopment || !group.hidden))
+  })
+
+  // Determine the initial group key
+  const initialGroupKey = computed<string>(() => {
+    // Use the configured default group if specified and visible
+    if (config.defaultGroupKey && visibleNetworkGroups.value[config.defaultGroupKey]) {
+      return config.defaultGroupKey
+    }
+
+    // Otherwise, fall back to the first visible group
+    const groups = Object.keys(visibleNetworkGroups.value)
+    if (groups.length === 0) {
+      throw new Error("No visible network groups found")
+    }
+    return groups[0]!
+  })
+
+  // Initialize with the determined group key
+  const activeGroupKey = ref<string>(initialGroupKey.value)
+
+  const activeGroup = computed(() => {
+    return networkGroups.value[activeGroupKey.value]
+  })
+
+  // Get the default network (first network in the active group)
+  const getDefaultNetworkForGroup = (groupKey: string): ZkSyncNetwork => {
+    const group = networkGroups.value[groupKey]
+    if (!group || group.networks.length === 0) {
+      throw new Error(`No networks found in group: ${groupKey}`)
+    }
+    return group.networks[0]!
+  }
+
+  const activeNetwork = ref<ZkSyncNetwork>(getDefaultNetworkForGroup(activeGroupKey.value))
 
   const activeNetworkL1 = computed<L1Network | null>(() => {
     const l1Network = activeNetwork.value.l1Network
@@ -28,21 +71,27 @@ export const useNetworkStore = defineStore("network", () => {
   const chainId = computed<number>(() => {
     return activeNetwork.value.id
   })
+
   const zkSyncNetworks = computed<ZkSyncNetwork[]>(() => {
-    return chains.value
-      .filter(chain => isObject((chain as ZkSyncNetwork).l1Network))
-      .filter(chain => chain.testnet === testnet.value) as ZkSyncNetwork[]
-  })
-  const l1Networks = computed<L1Network[]>(() => {
-    return chains.value
-      .filter(chain => isBoolean((chain as ZkSyncNetwork).l1Network))
-      .filter(chain => chain.testnet === testnet.value) as L1Network[]
+    if (!activeGroup.value) return []
+    return activeGroup.value.networks.filter(network =>
+      isObject((network as ZkSyncNetwork).l1Network))
   })
 
-  function toggleTestnet() {
-    testnet.value = !testnet.value
-    changeActiveNetwork(zkSyncNetworks.value[0]!.id)
+  const l1Networks = computed<L1Network[]>(() => {
+    if (!activeGroup.value) return []
+    return activeGroup.value.networks.filter(network =>
+      isBoolean((network as ZkSyncNetwork).l1Network)) as L1Network[]
+  })
+
+  function changeActiveGroup(groupKey: string) {
+    if (!networkGroups.value[groupKey]) {
+      throw new Error(`Network group not found: ${groupKey}`)
+    }
+    activeGroupKey.value = groupKey
+    changeActiveNetwork(getDefaultNetworkForGroup(groupKey).id)
   }
+
   function changeActiveNetwork(networkId: number) {
     const selectedNetwork = zkSyncNetworks.value.find(network => network.id === networkId)
     if (isNil(selectedNetwork)) {
@@ -52,7 +101,10 @@ export const useNetworkStore = defineStore("network", () => {
   }
 
   return {
-    testnet,
+    activeGroupKey,
+    activeGroup,
+    networkGroups,
+    visibleNetworkGroups,
     activeNetwork,
 
     activeNetworkL1,
@@ -61,7 +113,7 @@ export const useNetworkStore = defineStore("network", () => {
     chainId,
     zkSyncNetworks,
     l1Networks,
-    toggleTestnet,
+    changeActiveGroup,
     changeActiveNetwork,
   }
 })

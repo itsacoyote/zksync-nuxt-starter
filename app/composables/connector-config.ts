@@ -46,9 +46,13 @@ export const useConnectorConfig = () => {
   const appConfig = useAppConfig()
   const projectId = runtimeConfig.public.reownProjectId
 
+  // Extract all networks from all groups
+  const allNetworks: ZkSyncNetwork[] = Object.values(appConfig.networkGroups)
+    .flatMap(group => group.networks)
+
   const allChains: ZkSyncNetwork[] = [
-    ...appConfig.networks,
-    ...appConfig.networks.map(network => network.l1Network),
+    ...allNetworks,
+    ...allNetworks.map(network => network.l1Network),
   ]
     .filter((chain): chain is ZkSyncNetwork => !!chain && (chain as ZkSyncNetwork).id !== undefined)
     .reduce<ZkSyncNetwork[]>((acc, chain) => {
@@ -58,7 +62,31 @@ export const useConnectorConfig = () => {
       return acc
     }, [])
 
-  const defaultNetwork = allChains.find(chain => chain.id === appConfig.defaultNetwork.id)
+  // Find the default group to determine the default network
+  // In non-production environments, show hidden groups for testing
+  const isDevelopment = import.meta.dev
+
+  let defaultGroup
+  // Use the configured default group if specified
+  if (appConfig.defaultGroupKey) {
+    const configuredGroup = appConfig.networkGroups[appConfig.defaultGroupKey]
+    // Only use it if it exists and is visible (not hidden in production)
+    if (configuredGroup && (isDevelopment || !configuredGroup.hidden)) {
+      defaultGroup = configuredGroup
+    }
+  }
+
+  // If no configured default or it's hidden, fall back to first visible group
+  if (!defaultGroup) {
+    defaultGroup = Object.values(appConfig.networkGroups)
+      .find(group => isDevelopment || !group.hidden)
+  }
+
+  if (!defaultGroup || defaultGroup.networks.length === 0) {
+    throw new Error("No visible network groups with networks found")
+  }
+
+  const defaultNetwork = allChains.find(chain => chain.id === defaultGroup.networks[0]!.id)
   if (isNil(defaultNetwork)) {
     throw new Error("Default network must be included in list of networks in appConfig.")
   }
@@ -87,16 +115,14 @@ export const useConnectorConfig = () => {
   })
 
   // Only create AppKit on client side to avoid SSR errors
-  if (import.meta.client) {
-    createAppKit({
-      adapters: [ wagmiAdapter ],
-      networks: allChainsOrdered as unknown as [AppKitNetwork, ...AppKitNetwork[]],
-      metadata: metadata,
-      projectId,
-      defaultNetwork: defaultNetwork,
-      ...appKitConfiguration,
-    })
-  }
+  createAppKit({
+    adapters: [ wagmiAdapter ],
+    networks: allChainsOrdered as unknown as [AppKitNetwork, ...AppKitNetwork[]],
+    metadata: metadata,
+    projectId,
+    defaultNetwork: defaultNetwork,
+    ...appKitConfiguration,
+  })
 
   return {
     allChains: allChainsOrdered,

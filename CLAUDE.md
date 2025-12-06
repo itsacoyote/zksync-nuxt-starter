@@ -44,7 +44,8 @@ Nuxt auto-imports from:
 
 ### Component Structure
 
-Components are organized by domain
+- Components are organized by domain
+- Use DaisyUI first, then reka-ui for more complex UI components. Don't worry about trying to match styling, I will update styling.
 
 ### Type Definitions
 

@@ -9,7 +9,6 @@
         <Select.Value
           :placeholder="networkStore.activeNetwork.name"
           class="px-2 text-lg"
-          :class="{ 'text-purple-700 dark:text-purple-400': networkStore.testnet }"
         />
       </Select.Trigger>
 
@@ -26,7 +25,7 @@
 
           <Select.Viewport class="px-2">
             <Select.Label class="pl-6 text-sm py-2 text-base-content/70">
-              {{ networkStore.testnet ? 'Testnets' : 'Mainnets' }}
+              {{ networkStore.activeGroup?.name }}
             </Select.Label>
             <Select.Group>
               <Select.Item
