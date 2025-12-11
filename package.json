@@ -11,7 +11,13 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "local:setup": "bash scripts/setup-zksync-local.sh",
+    "local:start": "bash scripts/start-local.sh",
+    "local:stop": "bash scripts/stop-local.sh",
+    "local:clear": "bash scripts/clear-local.sh",
+    "local:l1": "bash scripts/start-l1.sh",
+    "local:l2": "bash scripts/start-l2.sh"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.7.1",

@@ -27,3 +27,8 @@ logs
 bun.lock
 pnpm-lock.*
 yarn.lock
+
+# ZKsync local development
+.zksync-local/
+genesis/
+db/

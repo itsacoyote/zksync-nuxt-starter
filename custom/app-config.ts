@@ -1,8 +1,8 @@
-import { zksyncAnvil, zksyncDockerizedNode } from "~~/networks/local"
+import { zksyncAnvil } from "../networks/local"
 import {
   zksyncGateway, zksyncGatewayTestnet, zksyncMainnet, zksyncSepolia, zksyncStaging,
-} from "~~/networks/zksync"
-import type { NetworkGroups } from "~~/shared/types/networks"
+} from "../networks/zksync"
+import type { NetworkGroups } from "../shared/types/networks"
 
 export const customNetworkGroups: NetworkGroups = {
   mainnet: {
@@ -24,10 +24,7 @@ export const customNetworkGroups: NetworkGroups = {
   local: {
     name: "Local",
     description: "Local development networks",
-    networks: [
-      zksyncDockerizedNode,
-      zksyncAnvil,
-    ],
+    networks: [ zksyncAnvil ],
   },
   testing: {
     name: "Testing",

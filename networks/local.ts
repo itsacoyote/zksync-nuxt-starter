@@ -12,7 +12,7 @@ export const zksyncAnvil: ZkSyncNetwork = {
   id: 260,
   key: "zksync-anvil",
   name: "Zksync Anvil",
-  rpcUrls: { default: { http: [ "http://localhost:8011" ] } },
+  rpcUrls: { default: { http: [ "http://localhost:3050" ] } },
   blockExplorers: {
     default: {
       name: "Anvil Explorer",
@@ -26,34 +26,36 @@ export const zksyncAnvil: ZkSyncNetwork = {
     id: 31337,
     key: "ethereum-anvil",
     name: "Ethereum Anvil",
+    rpcUrls: { default: { http: [ "http://localhost:8545" ] } },
   },
 }
 
+// ZKsync OS Server local network
+// Run with: npm run local:start
+// Requires: Foundry (anvil)
+// Setup: npm run local:setup
 export const zksyncDockerizedNode: ZkSyncNetwork = {
   ...zksyncSepolia,
   id: 270,
-  key: "dockerized-node",
-  name: "Dockerized local node",
+  key: "zksync-local",
+  name: "ZKsync Local (OS Server)",
   rpcUrls: { default: { http: [ "http://localhost:3050" ] } },
-  blockExplorers: {
-    default: {
-      name: "Docker Explorer",
-      url: "http://api.blockexplorer.dev",
-      apiUrl: "http://blockexplorer.dev",
-    },
-  },
+  // blockExplorers: {
+  //   default: {
+  //     name: "Local Explorer",
+  //     url: "http://localhost:3010",
+  //     apiUrl: "http://localhost:3010",
+  //   },
+  // },
   testnet: true,
   l1Network: {
     ...l1Sepolia,
-    id: 9,
+    id: 31337,
     key: "ethereum-local",
-    name: "Ethereum Local Node",
+    name: "Ethereum Local (Anvil)",
     nativeCurrency: {
       name: "Ether", symbol: "ETH", decimals: 18,
     },
-    rpcUrls: {
-      default: { http: [ "http://localhost:8545" ] },
-      public: { http: [ "http://localhost:8545" ] },
-    },
+    rpcUrls: { default: { http: [ "http://localhost:8545" ] } },
   },
 }

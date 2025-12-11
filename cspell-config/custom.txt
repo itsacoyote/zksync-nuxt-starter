@@ -1,4 +1,5 @@
 caipNetwork
+foundryup
 NOTOK
 Nuxt
 nuxt
@@ -13,5 +14,7 @@ viem
 vueuse
 Wagmi
 wagmi
+zkos
+zksync
 ZKsync
 zksync-js
