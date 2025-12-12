@@ -34,45 +34,6 @@ The starter includes Reown AppKit (WalletConnect v2) with support for:
 - Coinbase Wallet
 - ZKsync SSO (on Mainnet and Sepolia)
 
-## Local Blockchain Development
-
-### Setup Local ZKsync Network
-
-For testing with a local ZKsync network, set up the ZKsync OS Server:
-
-```bash
-# First time setup - downloads binaries and state files
-npm run local:setup
-```
-
-This downloads:
-
-- ZKsync OS Server binary
-- Genesis configuration
-
-### Start Local Networks
-
-```bash
-# Start both L1 (Anvil) and L2 (ZKsync OS Server)
-npm run local:start
-```
-
-**Network Endpoints:**
-
-- **L1 (Anvil)**: `http://localhost:8545`
-- **L2 (ZKsync)**: `http://localhost:3050`
-
-**Default Accounts:**
-
-Anvil provides 10 pre-funded accounts with 10,000 ETH each. The first account is:
-
-- Address: `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266`
-- Private Key: `0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80`
-
-The local network is pre-configured in the app and can be selected from the network switcher.
-
-See [scripts/README.md](scripts/README.md) for advanced local network options.
-
 ## Project Structure
 
 ```bash
@@ -87,10 +48,6 @@ See [scripts/README.md](scripts/README.md) for advanced local network options.
 │   ├── zksync.ts            # ZKsync network definitions
 │   ├── local.ts             # Local network definitions
 │   └── l1.ts                # L1 network definitions
-├── scripts/
-│   ├── setup-zksync-local.sh   # Local network setup
-│   ├── start-local.sh          # Start local networks
-│   └── README.md               # Local development guide
 └── shared/
     └── types/               # TypeScript types
 ```
@@ -129,13 +86,6 @@ See [scripts/README.md](scripts/README.md) for advanced local network options.
 npm run dev              # Start dev server
 npm run build            # Build for production
 npm run preview          # Preview production build
-
-# Local Networks
-npm run local:setup      # Setup local ZKsync network (first time)
-npm run local:start      # Start both L1 and L2
-npm run local:l1         # Start L1 (Anvil) only
-npm run local:l2         # Start L2 (ZKsync) only
-npm run local:stop       # Stop L1 and L2
 
 # Code Quality
 npm run lint             # Lint code
@@ -202,7 +152,6 @@ Create a `.env` file for environment-specific configuration:
 ## Resources
 
 - [ZKsync Documentation](https://docs.zksync.io/)
-- [ZKsync OS Server](https://github.com/matter-labs/zksync-os-server)
 - [Wagmi Vue Documentation](https://wagmi.sh/vue/getting-started)
 - [Nuxt 3 Documentation](https://nuxt.com/)
 - [Viem Documentation](https://viem.sh/)
