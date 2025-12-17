@@ -20,7 +20,10 @@
           v-for="navItem in appState.navMenu"
           :key="navItem.href"
         >
-          <NuxtLink :href="navItem.href">{{ navItem.name }}</NuxtLink>
+          <NuxtLink
+            :href="navItem.href"
+            class="text-lg"
+          >{{ navItem.name }}</NuxtLink>
         </li>
       </ul>
     </div>

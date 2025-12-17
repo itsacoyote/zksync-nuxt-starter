@@ -15,6 +15,8 @@ export default defineNuxtConfig({
     "nuxt-svgo",
     "@vueuse/nuxt",
     "reka-ui/nuxt",
+    "@nuxt/scripts",
+    "@nuxt/hints",
   ],
   imports: {
     dirs: [
@@ -103,6 +105,7 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: { public: { reownProjectId: "" } },
+  build: { transpile: [ "@nuxt/hints" ] },
   compatibilityDate: "2025-07-15",
 
   vite: { plugins: [ tailwindcss() ] },
@@ -130,5 +133,17 @@ export default defineNuxtConfig({
   },
 
   pinia: { storesDirs: [ "./app/stores/**" ] },
+
+  robots: {
+    disallow: [ "/kitchen-sink" ],
+    groups: [
+      {
+        userAgent: [
+          "GPTBot",
+          "ChatGPT-User",
+        ], disallow: [ "/kitchen-sink" ],
+      },
+    ],
+  },
   svgo: { autoImportPath: "./assets/svg/" },
 })

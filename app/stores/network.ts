@@ -60,12 +60,20 @@ export const useNetworkStore = defineStore("network", () => {
     return isBoolean(l1Network) ? null : l1Network
   })
 
-  const blockExplorerUrl = computed<string>(() => {
-    return activeNetwork.value.blockExplorers.default.url
+  const blockExplorerUrl = computed<string | null>(() => {
+    if (activeNetwork.value.blockExplorers.default) {
+      return activeNetwork.value.blockExplorers.default.url
+    } else {
+      return null
+    }
   })
 
-  const blockExplorerApiUrl = computed<string>(() => {
-    return activeNetwork.value.blockExplorers.default.apiUrl
+  const blockExplorerApiUrl = computed<string | null>(() => {
+    if (activeNetwork.value.blockExplorers.default) {
+      return activeNetwork.value.blockExplorers.default.apiUrl
+    } else {
+      return null
+    }
   })
 
   const chainId = computed<number>(() => {

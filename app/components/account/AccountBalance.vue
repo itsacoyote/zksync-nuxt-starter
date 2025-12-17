@@ -14,13 +14,14 @@
 <script setup lang="ts">
 import { getBalance } from "@wagmi/core"
 
+const props = defineProps<{ chainId?: number }>()
+
 const account = useAccount()
-const networkStore = useNetworkStore()
 const { wagmiAdapter } = useConnectorConfig()
 const accountBalance = asyncComputed(async () => {
   return await getBalance(wagmiAdapter.wagmiConfig, {
     address: account.address.value!,
-    chainId: networkStore.chainId,
+    chainId: props.chainId,
   })
 }, null)
 </script>

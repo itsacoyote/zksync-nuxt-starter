@@ -57,6 +57,7 @@
                   />
                 </button>
                 <NuxtLink
+                  v-if="networkStore.blockExplorerUrl"
                   :href="`${networkStore.blockExplorerUrl}/address/${address}`"
                   target="_blank"
                   class="btn btn-circle btn-soft"
@@ -66,6 +67,16 @@
                     class="align-middle text-2xl"
                   />
                 </NuxtLink>
+                <button
+                  v-else
+                  disabled
+                  className="cursor-not-allowed text-base-content/40"
+                >
+                  <Icon
+                    name="fluent:apps-20-filled"
+                    class="align-middle text-2xl"
+                  />
+                </button>
                 <button
                   type="button"
                   class="btn btn-circle btn-soft"
@@ -99,7 +110,7 @@
               </option>
             </select>
           </div>
-          <CommonNetworkSelect class="w-full" />
+          <CommonNetworkSwitch class="w-full" />
         </li>
       </ul>
     </div>

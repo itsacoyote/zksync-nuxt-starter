@@ -1,28 +1,28 @@
 import { formatUnits } from "viem"
 
 /**
- * Calculates and formats the fiat price of a token balance.
+ * Calculates and formats the USD value of a token balance.
  *
- * Converts a token amount (in its smallest unit) to a human-readable balance using the provided decimals,
- * multiplies it by the token's fiat price, and returns a formatted string representation.
- * - Returns "$0.00" if the balance price is zero or falsy.
- * - Returns "<$0.01" if the balance price is less than $0.01.
- * - Otherwise, returns the price rounded down to two decimal places, prefixed with "$".
+ * Converts a raw token amount (bigint) to its fiat value by:
+ * 1. Converting the amount using token decimals (e.g., wei → ETH)
+ * 2. Multiplying by the current token price
+ * 3. Formatting with special handling for edge cases
  *
- * @param amount - The token amount in its smallest unit (e.g., wei for ETH).
- * @param decimals - The number of decimals the token uses.
- * @param price - The fiat price per token unit.
- * @returns The formatted fiat price string.
+ * Formatting rules:
+ * - Zero or falsy values → "$0.00"
+ * - Values < $0.01 → "<$0.01" (prevents showing "$0.00" for dust amounts)
+ * - All other values → Rounded down to 2 decimal places (e.g., "$123.45")
+ *
+ * @param amount - Raw token amount as bigint (e.g., wei for ETH, smallest unit for any token)
+ * @param decimals - Token's decimal places (e.g., 18 for ETH, 6 for USDC)
+ * @param price - Current fiat price per 1 whole token (e.g., 2000 for ETH at $2000)
+ * @returns Formatted USD price string with $ prefix
  *
  * @example
- * ```typescript
- * // 1.5 tokens with 18 decimals, priced at $2.50 per token
- * const amount = BigInt("1500000000000000000");
- * const decimals = 18;
- * const price = 2.5;
- * const result = tokenBalancePriceFormatted(amount, decimals, price);
- * // result: "$3.75"
- * ```
+ * tokenBalancePriceFormatted(1500000000000000000n, 18, 2.5)  // "$3.75" (1.5 ETH × $2.50)
+ * tokenBalancePriceFormatted(1000000n, 6, 1.0)                // "$1.00" (1 USDC × $1.00)
+ * tokenBalancePriceFormatted(100n, 18, 2000)                  // "<$0.01" (dust amount)
+ * tokenBalancePriceFormatted(0n, 18, 2000)                    // "$0.00"
  */
 export function tokenBalancePriceFormatted(
   amount: bigint, decimals: number, price: number,

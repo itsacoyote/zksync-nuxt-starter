@@ -22,7 +22,7 @@
   <div
     v-else
   >
-    {{ formattedAmount[0] }}
+    {{ formattedAmount[0] }} {{ symbol }}
   </div>
 </template>
 

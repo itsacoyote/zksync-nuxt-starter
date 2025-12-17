@@ -3,7 +3,7 @@
     <LayoutPageHeader>
       {{ $t('transfers.header') }}
       <template #right-col>
-        <CommonNetworkSelect />
+        <CommonNetworkSwitch />
       </template>
     </LayoutPageHeader>
 

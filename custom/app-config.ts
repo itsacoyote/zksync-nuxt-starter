@@ -1,4 +1,4 @@
-import { zksyncAnvil } from "../networks/local"
+import { zksyncOS } from "../networks/local"
 import {
   zksyncGateway, zksyncGatewayTestnet, zksyncMainnet, zksyncSepolia, zksyncStaging,
 } from "../networks/zksync"
@@ -24,7 +24,8 @@ export const customNetworkGroups: NetworkGroups = {
   local: {
     name: "Local",
     description: "Local development networks",
-    networks: [ zksyncAnvil ],
+    networks: [ zksyncOS ],
+    hidden: true,
   },
   testing: {
     name: "Testing",

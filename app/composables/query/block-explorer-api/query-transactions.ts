@@ -38,8 +38,12 @@ export const useQueryTransactions = () => {
   const networkStore = useNetworkStore()
   const account = useAccount()
 
-  const fetchTransactions = async () =>
-    await fetch(`${networkStore.blockExplorerApiUrl}/api?module=account&action=txlist&page=1&offset=10&sort=descr&endblock=99999999&startblock=0&address=${account.address.value}`)
+  const fetchTransactions = async () => {
+    if (!networkStore.blockExplorerApiUrl) {
+      throw new Error("Block explorer API URL is not defined for the current network")
+    }
+    return await fetch(`${networkStore.blockExplorerApiUrl}/api?module=account&action=txlist&page=1&offset=10&sort=descr&endblock=99999999&startblock=0&address=${account.address.value}`)
+  }
 
   return useQuery({
     queryKey: [
@@ -49,6 +53,7 @@ export const useQueryTransactions = () => {
       () => networkStore.blockExplorerApiUrl,
     ],
     queryFn: () => fetchBlockExplorerApiData<Transaction[]>(fetchTransactions),
+    // enabled: () => networkStore.blockExplorerApiUrl !== null,
     retry: blockExplorerApiRetry,
     refetchInterval: 2 * 60 * 1000, // 2 minutes in milliseconds
   })

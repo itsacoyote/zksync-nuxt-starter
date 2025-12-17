@@ -109,7 +109,7 @@ export const useConnectorConfig = () => {
   }
 
   const wagmiAdapter = new WagmiAdapter({
-    networks: allChainsOrdered,
+    networks: allChainsOrdered as AppKitNetwork[],
     projectId,
     connectors: [ zksyncSsoConnector({ authServerUrl: "https://auth-test.zksync.dev/confirm" }) ],
   })
@@ -120,7 +120,7 @@ export const useConnectorConfig = () => {
     networks: allChainsOrdered as unknown as [AppKitNetwork, ...AppKitNetwork[]],
     metadata: metadata,
     projectId,
-    defaultNetwork: defaultNetwork,
+    defaultNetwork: defaultNetwork as AppKitNetwork,
     ...appKitConfiguration,
   })
 

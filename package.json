@@ -16,8 +16,10 @@
   "dependencies": {
     "@nuxt/eslint": "^1.7.1",
     "@nuxt/fonts": "^0.11.4",
+    "@nuxt/hints": "^1.0.0-alpha.3",
     "@nuxt/icon": "^1.15.0",
     "@nuxt/image": "^1.10.0",
+    "@nuxt/scripts": "^0.13.1",
     "@nuxt/test-utils": "^3.19.2",
     "@nuxtjs/color-mode": "^3.5.2",
     "@nuxtjs/i18n": "^10.0.3",
@@ -29,6 +31,7 @@
     "@simplewebauthn/server": "^13.1.2",
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/vue-query": "^5.83.0",
+    "@unhead/vue": "^2.0.19",
     "@vueuse/nuxt": "^13.6.0",
     "@wagmi/vue": "^0.1.24",
     "es-toolkit": "^1.39.8",
@@ -43,7 +46,7 @@
     "viem": "^2.33.1",
     "vue": "^3.5.17",
     "vue-router": "^4.5.1",
-    "zksync-sso-wagmi-connector": "^0.4.2-beta.1"
+    "zksync-sso-wagmi-connector": "^0.4.3"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",

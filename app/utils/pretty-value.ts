@@ -1,14 +1,26 @@
 import { formatUnits } from "viem"
 
 /**
- * Formats a bigint value into a human-readable string with truncated decimals.
+ * Formats a blockchain token amount (bigint) into a human-readable display string.
  *
- * @param amount - The value to format, as a bigint.
- * @param decimals - The number of decimals the value represents.
- * @param decimalLength - The maximum number of decimal places to display (default: 6).
- * @returns A tuple containing:
- *   - The pretty-formatted value as a string, truncated to `decimalLength` decimals.
- *   - The full formatted value as a string.
+ * The function intelligently truncates decimal places and handles edge cases:
+ * - For values ≥ 1: Shows up to `decimalLength` decimals, removing trailing zeros
+ * - For small decimals (0.x): Truncates to `decimalLength` places with "..." if more precision exists
+ * - For very tiny values that round to zero: Shows as "<0.00001" (based on decimalLength)
+ *
+ * @param amount - The raw token amount as a bigint (e.g., wei for ETH)
+ * @param decimals - The token's decimal places (e.g., 18 for ETH, 6 for USDC)
+ * @param decimalLength - Maximum decimal places to display in pretty format (default: 6)
+ *
+ * @returns A tuple [prettyValue, fullValue]:
+ *   - `prettyValue`: Truncated, user-friendly display string
+ *   - `fullValue`: Complete untruncated value string
+ *
+ * @example
+ * prettyValue(1245000000000000000n, 18, 6) // ["1.245", "1.245"]
+ * prettyValue(123456789012345678n, 18, 6)  // ["0.123456...", "0.123456789012345678"]
+ * prettyValue(100n, 18, 6)                 // ["<0.000001", "0.0000000000000001"]
+ * prettyValue(0n, 18, 6)                   // ["0", "0"]
  */
 export function prettyValue(
   amount: bigint, decimals: number, decimalLength = 6,

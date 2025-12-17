@@ -54,9 +54,14 @@
       <tbody v-else-if="error">
         <tr>
           <td colspan="6">
-            <CommonAlertPane>
-              An error occurred with trying to load account transaction data.
-            </CommonAlertPane>
+            <UiAlertPane>
+              <template v-if="error.message?.includes('Block explorer API URL is not defined')">
+                Block explorer is not available for the current network. Transaction history cannot be displayed.
+              </template>
+              <template v-else>
+                An error occurred with trying to load account transaction data.
+              </template>
+            </UiAlertPane>
           </td>
         </tr>
       </tbody>

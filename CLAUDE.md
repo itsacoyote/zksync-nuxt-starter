@@ -26,8 +26,9 @@ The project uses Nuxt 4 with Vue 3 and integrates ZKsync-specific features inclu
 
 ### Tools
 
-- Use viem, not ethers library. When using zksync-js, use viem.
-- Use wagmi otherwise
+- Use viem, not ethers library. (https://viem.sh/docs/getting-started)
+- When using zksync-js, use viem. (https://matter-labs.github.io/zksync-js/latest/overview/index.html)
+- Use wagmi for wallet management (https://wagmi.sh/react/getting-started)
 
 ### State Management (Pinia Stores)
 

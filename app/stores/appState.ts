@@ -8,6 +8,7 @@ export const useAppStateStore = defineStore("appState", () => {
     { href: "/transactions", name: i18n.t("navigation.transactions") },
     { href: "/transfers", name: i18n.t("navigation.transfers") },
     { href: "/assets", name: i18n.t("navigation.assets") },
+    { href: "/networks", name: i18n.t("navigation.networks") },
   ]
 
   function toggleProfileDrawer(state?: boolean) {

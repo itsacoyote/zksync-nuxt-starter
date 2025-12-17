@@ -14,11 +14,15 @@ export interface BaseToken {
 export const useQueryBaseToken = () => {
   const networkStore = useNetworkStore()
 
-  const fetchBaseToken = async () =>
-    await fetch(`${networkStore.blockExplorerApiUrl}/api?module=token&action=tokeninfo&contractaddress=${L2_BASE_TOKEN_ADDRESS}`)
+  const fetchBaseToken = async () => {
+    if (!networkStore.blockExplorerApiUrl) {
+      throw new Error("Block explorer API URL is not defined for the current network")
+    }
+    return await fetch(`${networkStore.blockExplorerApiUrl}/api?module=token&action=tokeninfo&contractaddress=${L2_BASE_TOKEN_ADDRESS}`)
+  }
 
   const formatData = (token: BaseToken) => {
-    console.log("TOKEN?", token)
+    console.log("TOKEN:: ", token)
     return {
       l2Address: token.contractAddress,
       l1Address: token.l1Address,
@@ -37,6 +41,7 @@ export const useQueryBaseToken = () => {
       () => networkStore.blockExplorerApiUrl,
     ],
     queryFn: () => fetchBlockExplorerApiData<BaseToken[]>(fetchBaseToken).then(data => formatData(data[0]!)),
+    // enabled: () => networkStore.blockExplorerApiUrl !== null,
     retry: blockExplorerApiRetry,
     refetchInterval: 5 * 60 * 1000, // 5 minutes in milliseconds
   })

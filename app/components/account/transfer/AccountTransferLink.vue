@@ -6,6 +6,7 @@
     </div>
     <div>
       <NuxtLink
+        v-if="blockExplorerUrl"
         target="_blank"
         :href="`${blockExplorerUrl}/tx/${transfer.transactionHash}`"
         class="btn btn-circle btn-soft group"
@@ -15,6 +16,16 @@
           class="text-xl text-base-content/60 group-hover:text-base-content"
         />
       </NuxtLink>
+      <button
+        v-else
+        disabled
+        className="cursor-not-allowed"
+      >
+        <Icon
+          name="fluent:open-32-filled"
+          class="text-xl text-base-content/40"
+        />
+      </button>
     </div>
   </li>
 </template>

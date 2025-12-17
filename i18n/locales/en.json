@@ -6,7 +6,8 @@
   "navigation": {
     "transfers": "Transfer History",
     "assets": "Assets",
-    "transactions": "Transactions"
+    "transactions": "Transactions",
+    "networks": "Networks"
   },
   "index": {
     "header": "Account Summary"
@@ -19,5 +20,8 @@
   },
   "transactions": {
     "header": "Transactions"
+  },
+  "networks": {
+    "header": "Networks"
   }
 }

@@ -33,6 +33,9 @@ export const useQueryTokens = () => {
   const networkStore = useNetworkStore()
 
   const fetchData = async (): Promise<{ [k in string]: Token }> => {
+    if (!networkStore.blockExplorerApiUrl) {
+      throw new Error("Block explorer API URL is not defined for the current network")
+    }
     const urls = [
       1,
       2,
@@ -54,6 +57,7 @@ export const useQueryTokens = () => {
       () => networkStore.blockExplorerApiUrl,
     ],
     queryFn: fetchData,
+    // enabled: () => networkStore.blockExplorerApiUrl !== null,
     retry: blockExplorerApiRetry,
     refetchInterval: 5 * 60 * 1000, // 5 minutes in milliseconds
   })

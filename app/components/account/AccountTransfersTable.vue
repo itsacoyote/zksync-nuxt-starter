@@ -10,9 +10,16 @@
       </li>
     </template>
     <template v-else-if="hasError">
-      <CommonAlertPane>
-        An error occurred with trying to load transfer history data.
-      </CommonAlertPane>
+      <li class="px-4 py-6">
+        <UiAlertPane>
+          <template v-if="transfersError?.message?.includes('Block explorer API URL is not defined')">
+            Block explorer is not available for the current network. Transfer history cannot be displayed.
+          </template>
+          <template v-else>
+            An error occurred with trying to load transfer history data.
+          </template>
+        </UiAlertPane>
+      </li>
     </template>
     <template v-else>
       <template v-if="transfersData && transfersData.length">

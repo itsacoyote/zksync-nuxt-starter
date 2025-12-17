@@ -8,7 +8,16 @@
       </li>
     </template>
     <template v-else-if="hasError">
-      Error!
+      <li class="px-4 py-6">
+        <UiAlertPane>
+          <template v-if="isBlockExplorerUnavailable">
+            Block explorer is not available for the current network. Asset balances cannot be displayed.
+          </template>
+          <template v-else>
+            An error occurred with trying to load account asset data.
+          </template>
+        </UiAlertPane>
+      </li>
     </template>
     <template v-else>
       <template v-if="data">
@@ -90,6 +99,13 @@ const inProgress = computed(() => {
 
 const hasError = computed(() => {
   return assetsError.value || tokensError.value
+})
+
+const isBlockExplorerUnavailable = computed(() => {
+  const assetsMessage = assetsError.value?.message || ""
+  const tokensMessage = tokensError.value?.message || ""
+  return assetsMessage.includes("Block explorer API URL is not defined")
+    || tokensMessage.includes("Block explorer API URL is not defined")
 })
 
 interface TokenInfo {

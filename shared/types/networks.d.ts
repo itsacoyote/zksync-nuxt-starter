@@ -22,7 +22,7 @@ export type ZkSyncNetwork = {
       name: string
       url: string
       apiUrl: string
-    }
+    } | undefined
   }
   nativeCurrency: {
     name: string
