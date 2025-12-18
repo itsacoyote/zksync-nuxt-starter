@@ -127,10 +127,11 @@ watch(
     () => assetsData.value,
   ], () => {
     if (tokensData.value && assetsData.value) {
+      const tokensByL2Address = flattenTokensByAddress(tokensData.value)
       data.value = assetsData.value.map((asset) => {
-        const usdBalance = tokensData.value[asset.l2Address]?.usdPrice
+        const usdBalance = tokensByL2Address[asset.l2Address]?.usdPrice
           ? tokenBalancePriceRaw(
-            asset.amount, asset.decimals, tokensData.value[asset.l2Address]!.usdPrice,
+            asset.amount, asset.decimals, tokensByL2Address[asset.l2Address]!.usdPrice,
           )
           : null
 
@@ -139,12 +140,12 @@ watch(
         }
         return {
           ...asset,
-          price: tokensData.value[asset.l2Address]?.usdPrice,
-          liquidity: tokensData.value[asset.l2Address]?.liquidity,
-          iconUrl: tokensData.value[asset.l2Address]?.iconURL,
-          usdBalance: tokensData.value[asset.l2Address]?.usdPrice
+          price: tokensByL2Address[asset.l2Address]?.usdPrice,
+          liquidity: tokensByL2Address[asset.l2Address]?.liquidity,
+          iconUrl: tokensByL2Address[asset.l2Address]?.iconURL,
+          usdBalance: tokensByL2Address[asset.l2Address]?.usdPrice
             ? tokenBalancePriceFormatted(
-              asset.amount, asset.decimals, tokensData.value[asset.l2Address]!.usdPrice,
+              asset.amount, asset.decimals, tokensByL2Address[asset.l2Address]!.usdPrice,
             )
             : null,
         }

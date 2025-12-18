@@ -14,6 +14,8 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@ankr.com/ankr.js": "^0.6.1",
+    "@matterlabs/zksync-js": "^0.0.1",
     "@nuxt/eslint": "^1.7.1",
     "@nuxt/fonts": "^0.11.4",
     "@nuxt/hints": "^1.0.0-alpha.3",
@@ -54,7 +56,7 @@
     "@iconify-json/fluent": "^1.2.28",
     "@stylistic/eslint-plugin": "^5.2.2",
     "cspell": "^9.2.0",
-    "daisyui": "^5.0.50",
+    "daisyui": "^5.5.14",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",

@@ -104,7 +104,7 @@ export default defineNuxtConfig({
     dataValue: "theme",
   },
 
-  runtimeConfig: { public: { reownProjectId: "" } },
+  runtimeConfig: { public: { reownProjectId: "", ankrToken: "" } },
   build: { transpile: [ "@nuxt/hints" ] },
   compatibilityDate: "2025-07-15",
 

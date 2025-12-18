@@ -36,7 +36,7 @@ export const customNetworkGroups: NetworkGroups = {
 }
 
 // Specify which group should be the default on app load
-export const defaultGroupKey = "local"
+export const defaultGroupKey = "testnet"
 
 export const ssoNetworks = [
   zksyncMainnet,

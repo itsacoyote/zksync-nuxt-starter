@@ -5,6 +5,7 @@ export const useAppStateStore = defineStore("appState", () => {
   const isProfileDrawerOpen = ref<boolean>(false)
   const isMenuDrawerOpen = ref<boolean>(false)
   const navMenu = [
+    { href: "/bridge", name: i18n.t("navigation.bridge") },
     { href: "/transactions", name: i18n.t("navigation.transactions") },
     { href: "/transfers", name: i18n.t("navigation.transfers") },
     { href: "/assets", name: i18n.t("navigation.assets") },

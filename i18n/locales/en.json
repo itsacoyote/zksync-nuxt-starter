@@ -7,7 +7,8 @@
     "transfers": "Transfer History",
     "assets": "Assets",
     "transactions": "Transactions",
-    "networks": "Networks"
+    "networks": "Networks",
+    "bridge": "Bridge"
   },
   "index": {
     "header": "Account Summary"
@@ -23,5 +24,8 @@
   },
   "networks": {
     "header": "Networks"
+  },
+  "bridge": {
+    "header": "Bridge"
   }
 }

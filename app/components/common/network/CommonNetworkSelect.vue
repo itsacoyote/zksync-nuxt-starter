@@ -39,6 +39,10 @@
                 <Icon name="fluent:checkmark-16-regular" />
               </Select.ItemIndicator>
               <Select.ItemText>
+                <img
+                  :src="`/network-icons/${network.id}.svg`"
+                  class="w-4 h-4 rounded-sm absolute bottom-0 right-0"
+                >
                 {{ network.name }}
               </Select.ItemText>
             </Select.Item>
@@ -57,7 +61,7 @@
 
 <script setup lang="ts">
 /**
- * A network selector that WILL NOT change the actively selected network for the wallet.
+ * A network selector that WILL NOT switch the actively selected network for the wallet.
  * Use the CommonNetworkSelect component to change the active network.
  */
 import { Select } from "reka-ui/namespaced"

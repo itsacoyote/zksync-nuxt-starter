@@ -1,4 +1,5 @@
 import { isBoolean, isNil } from "es-toolkit"
+import { uniqBy } from "es-toolkit/array"
 import { isObject } from "es-toolkit/compat"
 
 import type {
@@ -88,8 +89,10 @@ export const useNetworkStore = defineStore("network", () => {
 
   const l1Networks = computed<L1Network[]>(() => {
     if (!activeGroup.value) return []
-    return activeGroup.value.networks.filter(network =>
-      isBoolean((network as ZkSyncNetwork).l1Network)) as L1Network[]
+    const l1Networks: ZkSyncNetwork[] = activeGroup.value.networks.map((network) => {
+      return network.l1Network as ZkSyncNetwork
+    })
+    return uniqBy(l1Networks, network => network.id)
   })
 
   function changeActiveGroup(groupKey: string) {
@@ -108,6 +111,14 @@ export const useNetworkStore = defineStore("network", () => {
     activeNetwork.value = selectedNetwork
   }
 
+  function getNetworkById(id: number): ZkSyncNetwork {
+    const networks = [
+      ...zkSyncNetworks.value,
+      ...l1Networks.value,
+    ]
+    return networks.filter(network => network.id === id)[0]!
+  }
+
   return {
     activeGroupKey,
     activeGroup,
@@ -123,6 +134,8 @@ export const useNetworkStore = defineStore("network", () => {
     l1Networks,
     changeActiveGroup,
     changeActiveNetwork,
+
+    getNetworkById,
   }
 })
 
