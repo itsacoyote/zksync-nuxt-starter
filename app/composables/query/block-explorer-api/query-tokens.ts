@@ -1,16 +1,7 @@
 import { useQuery } from "@tanstack/vue-query"
 import { flatMap } from "es-toolkit"
 
-export interface Token {
-  l2Address: `0x${string}`
-  l1Address: `0x${string}`
-  symbol: string
-  name: string
-  decimals: string
-  usdPrice: number
-  liquidity: number
-  iconURL: string
-}
+import type { Token } from "~~/shared/types/token"
 
 interface TokensResponse {
   items: Token[]

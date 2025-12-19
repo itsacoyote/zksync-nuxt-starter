@@ -3,7 +3,17 @@ import { acceptHMRUpdate, defineStore } from "pinia"
 export const useConnectorStore = defineStore("connector", () => {
   const account = useAccount()
 
-  const isConnected = computed(() => account.isConnected.value)
+  const isConnected = computed<boolean | null>(() => {
+    if (account.status.value === "connecting") {
+      return null
+    } else {
+      return account.isConnected.value
+    }
+  })
+
+  const connecting = computed<boolean>(() => {
+    return account.status.value === "connecting"
+  })
   const appState = useAppStateStore()
 
   // watch(
@@ -31,7 +41,7 @@ export const useConnectorStore = defineStore("connector", () => {
     },
   })
 
-  return { isConnected }
+  return { isConnected, connecting }
 })
 
 if (import.meta.hot) {

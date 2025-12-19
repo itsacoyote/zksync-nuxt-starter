@@ -8,18 +8,6 @@ export const zksyncOS: ZkSyncNetwork = {
   rpcUrls: { default: { http: [ "http://localhost:3050" ] } },
   blockExplorers: { default: undefined },
   testnet: true,
-  l1Network: {
-    id: 31337,
-    testnet: true,
-    l1Network: true,
-    key: "ethereum-anvil",
-    name: "Ethereum Anvil",
-    nativeCurrency: {
-      name: "Ether", symbol: "ETH", decimals: 18,
-    },
-    rpcUrls: { default: { http: [ "http://localhost:8545" ] } },
-    blockExplorers: { default: undefined },
-  },
   nativeCurrency: {
     name: "Ether", symbol: "ETH", decimals: 18,
   },

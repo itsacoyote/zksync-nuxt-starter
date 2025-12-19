@@ -18,8 +18,13 @@ export const useAccountStore = defineStore("account", () => {
       }
 
       if (ensAccount.name) {
-        ensAccount.avatar = await getEnsAvatar(wagmiAdapter.wagmiConfig,
-          { name: normalize(ensAccount.name), chainId: 1 })
+        try {
+          ensAccount.avatar = await getEnsAvatar(wagmiAdapter.wagmiConfig,
+            { name: normalize(ensAccount.name), chainId: 1 })
+        } catch (error) {
+          console.warn("Failed to fetch ENS avatar:", error)
+          ensAccount.avatar = null
+        }
       } else {
         ensAccount.avatar = null
       }

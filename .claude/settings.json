@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"$CLAUDE_PROJECT_DIR\" && npm run lint:fix"
+            "command": "npm run lint:fix"
           }
         ]
       }

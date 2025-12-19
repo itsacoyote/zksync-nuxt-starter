@@ -19,13 +19,13 @@
 <script setup lang="ts">
 const props = defineProps<{ transfer: Transfer }>()
 
-const networkStore = useNetworkStore()
+const { activeNetwork, l1Network } = useNetworkStore()
 
 const direction = computed(() => {
   if (props.transfer.type === "withdrawal") {
-    return `${networkStore.activeNetwork.name} -> ${networkStore.activeNetworkL1!.name}`
+    return `${activeNetwork.name} -> ${l1Network!.name}`
   } else {
-    return `${networkStore.activeNetworkL1!.name} -> ${networkStore.activeNetwork.name}`
+    return `${l1Network!.name} -> ${activeNetwork.name}`
   }
 })
 </script>

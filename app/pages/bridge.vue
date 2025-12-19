@@ -4,8 +4,30 @@
       {{ $t("bridge.header") }}
     </LayoutPageHeader>
 
-    <UiSection>
+    <UiSection class="max-w-[550px] m-auto">
       <UiCard>
+        <div class="flex flex-row items-center gap-2">
+          <strong>From: </strong>
+          <select
+            v-model="fromNetworkId"
+            class="select"
+          >
+            <option
+              :value="null"
+              disabled
+            >
+              Select a network
+            </option>
+            <option
+              v-for="(network) in networkList"
+              :key="network.id"
+              :value="network.id"
+            >
+              {{ network.name }}
+            </option>
+          </select>
+        </div>
+
         <div class="my-2 flex flex-row items-center gap-2">
           <input
             v-model="transferAmount"
@@ -13,7 +35,8 @@
             class="input input-ghost input-xl"
             placeholder="0"
           >
-          <CommonSelectTokenModal
+          <CommonSelectTokenFromNetworkModal
+            :network-id="fromNetworkId"
             @token-selected="selectToken"
           />
         </div>
@@ -24,7 +47,10 @@
             v-model="toNetworkId"
             class="select"
           >
-            <option :value="null">
+            <option
+              :value="null"
+              disabled
+            >
               Select a network
             </option>
             <option
@@ -37,29 +63,28 @@
           </select>
         </div>
       </UiCard>
+      <div class="mt-4">
+        <AccountConnectButton
+          v-if="!isConnected && !connecting"
+          class="w-full btn-xl"
+        />
+        <template v-else>
+          <button
+            class="btn btn-xl w-full"
+            :disabled="buttonState.disabled"
+          >
+            {{ buttonState.message }}
+          </button>
+        </template>
+      </div>
     </UiSection>
-    <button class="btn btn-xl w-full">
-      <template v-if="!tokenToTransfer">
-        Select a token
-      </template>
-      <template v-else-if="!transferAmount || transferAmount <= 0">
-        Enter an amount
-      </template>
-      <template v-else-if="!toNetworkId">
-        Select destination
-      </template>
-      <template v-else-if="transferType">
-        <span class="capitalize">{{ transferType }}</span> token
-      </template>
-      <template v-else>
-        --
-      </template>
-    </button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useBridgeStore } from "~/stores/bridge/bridge"
+
+const { isConnected, connecting } = storeToRefs(useConnectorStore())
 
 const {
   fromNetworkId,
@@ -69,36 +94,29 @@ const {
   tokenToTransfer,
   transferType,
 } = storeToRefs(useBridgeStore())
-const networkStore = useNetworkStore()
 
 // Filter out the selected "from" network from the "to" network list
 const toNetworkList = computed(() => {
-  // Always create a fresh array copy to ensure Vue detects changes
-  const networks = [ ...networkList.value ]
   const currentFromId = fromNetworkId.value
 
-  if (!currentFromId) {
-    return networks
-  }
-
-  return networks.filter(network => network.id !== currentFromId)
+  return networkList.value.filter(network => network.id !== currentFromId)
 })
 
-function selectToken({ token, networkId }: { token: Token, networkId: number }) {
-  // Set the fromNetworkSelect to the network id
-  fromNetworkId.value = networkId
+function selectToken(token: Token) {
   tokenToTransfer.value = token
-
-  // Get the network and check if it's L2
-  const network = networkStore.getNetworkById(networkId)
-
-  if (isNetworkL2(network)) {
-    // If the network is L2, set toNetworkSelect to the L1 network
-    const l1Network = network.l1Network as ZkSyncNetwork
-    toNetworkId.value = l1Network.id
-  } else {
-    // If the network is L1, leave the network unselected
-    toNetworkId.value = null
-  }
 }
+
+const buttonState = computed(() => {
+  if (!tokenToTransfer.value) {
+    return { message: "Select a token", disabled: true }
+  } else if (!transferAmount.value || transferAmount.value <= 0) {
+    return { message: "Enter an amount", disabled: true }
+  } else if (!toNetworkId.value) {
+    return { message: "Select destination", disabled: true }
+  } else if (transferType.value) {
+    return { message: `${transferType.value} token`, disabled: false }
+  } else {
+    return { message: "Cannot bridge", disabled: true }
+  }
+})
 </script>

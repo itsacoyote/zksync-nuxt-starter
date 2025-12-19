@@ -1,7 +1,6 @@
 import { zksync, zksyncSepoliaTestnet } from "@wagmi/core/chains"
 
 import type { ZkSyncNetwork } from "../shared/types/networks.d"
-import { l1Mainnet, l1Sepolia } from "./l1"
 
 export const zksyncMainnet: ZkSyncNetwork = {
   ...zksync,
@@ -17,7 +16,6 @@ export const zksyncMainnet: ZkSyncNetwork = {
     },
   },
   testnet: false,
-  l1Network: l1Mainnet,
 }
 
 export const zksyncSepolia: ZkSyncNetwork = {
@@ -33,7 +31,6 @@ export const zksyncSepolia: ZkSyncNetwork = {
       apiUrl: "https://block-explorer-api.sepolia.zksync.dev",
     },
   },
-  l1Network: l1Sepolia,
   sso: true,
 }
 
@@ -51,7 +48,6 @@ export const zksyncStaging: ZkSyncNetwork = {
     },
   },
   testnet: true,
-  l1Network: l1Sepolia,
 }
 
 export const zksyncGateway: ZkSyncNetwork = {
@@ -72,7 +68,6 @@ export const zksyncGateway: ZkSyncNetwork = {
     decimals: 18,
   },
   testnet: false,
-  l1Network: l1Mainnet,
   nativeTokenBridgingOnly: true,
 }
 
@@ -94,6 +89,5 @@ export const zksyncGatewayTestnet: ZkSyncNetwork = {
     decimals: 18,
   },
   testnet: true,
-  l1Network: l1Sepolia,
   nativeTokenBridgingOnly: true,
 }

@@ -12,15 +12,15 @@
       <p>Address: {{ address }}</p>
       <p>Network ID: {{ chainId }}</p>
       <p>Balance: <AccountBalance :chain-id="chainId" /></p>
-      <p v-if="activeNetworkL1">
-        L1 Balance: <AccountBalance :chain-id="activeNetworkL1.id" />
+      <p>
+        L1 Balance: <AccountBalance :chain-id="l1Network.id" />
       </p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-const { chainId, activeNetworkL1 } = storeToRefs(useNetworkStore())
+const { chainId, l1Network } = storeToRefs(useNetworkStore())
 
 const { address } = storeToRefs(useAccountStore())
 const { ensAccount } = useAccountStore()

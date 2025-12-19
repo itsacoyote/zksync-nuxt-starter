@@ -9,6 +9,7 @@ export interface BaseToken {
   liquidity: bigint
   l1Address: `0x${string}`
   iconURL: string
+  native: true
 }
 
 export const useQueryBaseToken = () => {
@@ -22,7 +23,6 @@ export const useQueryBaseToken = () => {
   }
 
   const formatData = (token: BaseToken) => {
-    console.log("TOKEN:: ", token)
     return {
       l2Address: token.contractAddress,
       l1Address: token.l1Address,
@@ -32,6 +32,7 @@ export const useQueryBaseToken = () => {
       usdPrice: token.tokenPriceUSD,
       liquidity: token.liquidity,
       iconURL: token.iconURL,
+      native: true,
     }
   }
 

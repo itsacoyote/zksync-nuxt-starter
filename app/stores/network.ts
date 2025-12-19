@@ -1,6 +1,4 @@
-import { isBoolean, isNil } from "es-toolkit"
-import { uniqBy } from "es-toolkit/array"
-import { isObject } from "es-toolkit/compat"
+import { isNil } from "es-toolkit"
 
 import type {
   L1Network, NetworkGroups, ZkSyncNetwork,
@@ -41,8 +39,8 @@ export const useNetworkStore = defineStore("network", () => {
   // Initialize with the determined group key
   const activeGroupKey = ref<string>(initialGroupKey.value)
 
-  const activeGroup = computed(() => {
-    return networkGroups.value[activeGroupKey.value]
+  const activeGroup = computed<NetworkGroup>(() => {
+    return networkGroups.value[activeGroupKey.value]!
   })
 
   // Get the default network (first network in the active group)
@@ -56,9 +54,8 @@ export const useNetworkStore = defineStore("network", () => {
 
   const activeNetwork = ref<ZkSyncNetwork>(getDefaultNetworkForGroup(activeGroupKey.value))
 
-  const activeNetworkL1 = computed<L1Network | null>(() => {
-    const l1Network = activeNetwork.value.l1Network
-    return isBoolean(l1Network) ? null : l1Network
+  const l1Network = computed<L1Network>(() => {
+    return activeGroup.value.l1Network
   })
 
   const blockExplorerUrl = computed<string | null>(() => {
@@ -83,16 +80,7 @@ export const useNetworkStore = defineStore("network", () => {
 
   const zkSyncNetworks = computed<ZkSyncNetwork[]>(() => {
     if (!activeGroup.value) return []
-    return activeGroup.value.networks.filter(network =>
-      isObject((network as ZkSyncNetwork).l1Network))
-  })
-
-  const l1Networks = computed<L1Network[]>(() => {
-    if (!activeGroup.value) return []
-    const l1Networks: ZkSyncNetwork[] = activeGroup.value.networks.map((network) => {
-      return network.l1Network as ZkSyncNetwork
-    })
-    return uniqBy(l1Networks, network => network.id)
+    return activeGroup.value.networks
   })
 
   function changeActiveGroup(groupKey: string) {
@@ -114,9 +102,20 @@ export const useNetworkStore = defineStore("network", () => {
   function getNetworkById(id: number): ZkSyncNetwork {
     const networks = [
       ...zkSyncNetworks.value,
-      ...l1Networks.value,
+      l1Network.value,
     ]
     return networks.filter(network => network.id === id)[0]!
+  }
+
+  function networkLayer(networkId: number): "L1" | "L2" | "Gateway" {
+    if (networkId === l1Network.value.id) {
+      return "L1"
+    }
+    if (getNetworkById(networkId).nativeTokenBridgingOnly) {
+      return "Gateway"
+    } else {
+      return "L2"
+    }
   }
 
   return {
@@ -126,14 +125,14 @@ export const useNetworkStore = defineStore("network", () => {
     visibleNetworkGroups,
     activeNetwork,
 
-    activeNetworkL1,
+    l1Network,
     blockExplorerUrl,
     blockExplorerApiUrl,
     chainId,
     zkSyncNetworks,
-    l1Networks,
     changeActiveGroup,
     changeActiveNetwork,
+    networkLayer,
 
     getNetworkById,
   }

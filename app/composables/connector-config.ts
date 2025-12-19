@@ -1,10 +1,11 @@
 import { createAppKit } from "@reown/appkit/vue"
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi"
 import type { AppKitNetwork } from "@reown/appkit-common"
-import { isNil, uniq } from "es-toolkit"
+import { pull } from "es-toolkit/array"
 import { zksyncSsoConnector } from "zksync-sso-wagmi-connector"
 
 import { customAppKitConfig, customMetadata } from "~~/custom/app-config"
+import type { NetworkGroup, ZkSyncNetwork } from "~~/shared/types/networks"
 
 const metadata = customMetadata ?? {
   name: "Starter Kit",
@@ -46,21 +47,15 @@ export const useConnectorConfig = () => {
   const appConfig = useAppConfig()
   const projectId = runtimeConfig.public.reownProjectId
 
-  // Extract all networks from all groups
-  const allNetworks: ZkSyncNetwork[] = Object.values(appConfig.networkGroups)
-    .flatMap(group => group.networks)
+  const groupKeys = Object.keys(appConfig.networkGroups) as Array<keyof typeof appConfig.networkGroups>
+  const defaultGroupKey = appConfig.defaultGroupKey
+  pull(groupKeys, [ defaultGroupKey ])
+  groupKeys.push(defaultGroupKey)
 
-  const allChains: ZkSyncNetwork[] = [
-    ...allNetworks,
-    ...allNetworks.map(network => network.l1Network),
-  ]
-    .filter((chain): chain is ZkSyncNetwork => !!chain && (chain as ZkSyncNetwork).id !== undefined)
-    .reduce<ZkSyncNetwork[]>((acc, chain) => {
-      if (!acc.some(c => c.id === chain.id)) {
-        acc.push(chain)
-      }
-      return acc
-    }, [])
+  const allNetworks = [
+    ...groupKeys.flatMap(key => appConfig.networkGroups[key].networks),
+    ...groupKeys.map(key => appConfig.networkGroups[key].l1Network),
+  ] as ZkSyncNetwork[]
 
   // Find the default group to determine the default network
   // In non-production environments, show hidden groups for testing
@@ -69,7 +64,7 @@ export const useConnectorConfig = () => {
   let defaultGroup
   // Use the configured default group if specified
   if (appConfig.defaultGroupKey) {
-    const configuredGroup = appConfig.networkGroups[appConfig.defaultGroupKey]
+    const configuredGroup = appConfig.networkGroups[appConfig.defaultGroupKey] as NetworkGroup
     // Only use it if it exists and is visible (not hidden in production)
     if (configuredGroup && (isDevelopment || !configuredGroup.hidden)) {
       defaultGroup = configuredGroup
@@ -78,7 +73,7 @@ export const useConnectorConfig = () => {
 
   // If no configured default or it's hidden, fall back to first visible group
   if (!defaultGroup) {
-    defaultGroup = Object.values(appConfig.networkGroups)
+    defaultGroup = (Object.values(appConfig.networkGroups) as NetworkGroup[])
       .find(group => isDevelopment || !group.hidden)
   }
 
@@ -86,13 +81,15 @@ export const useConnectorConfig = () => {
     throw new Error("No visible network groups with networks found")
   }
 
-  const defaultNetwork = allChains.find(chain => chain.id === defaultGroup.networks[0]!.id)
-  if (isNil(defaultNetwork)) {
-    throw new Error("Default network must be included in list of networks in appConfig.")
-  }
-  if (isNil(defaultNetwork.l1Network)) {
-    throw new Error("Default network cannot be an L1 network.")
-  }
+  const defaultNetwork = defaultGroup.networks[0]
+
+  // Deduplicate networks by chain ID
+  const allChains = allNetworks.reduce<ZkSyncNetwork[]>((acc, network) => {
+    if (!acc.some(n => n.id === network.id)) {
+      acc.push(network)
+    }
+    return acc
+  }, [])
 
   // Move defaultNetwork to the front of allChains
   const allChainsOrdered = defaultNetwork
@@ -101,12 +98,6 @@ export const useConnectorConfig = () => {
       ...allChains.filter(chain => chain.id !== defaultNetwork.id),
     ]
     : allChains
-
-  const allChainKeys = allChainsOrdered.map(chain => chain.key)
-  const allChainKeysDedupe = uniq(allChainKeys)
-  if (allChainKeysDedupe.length !== allChainKeys.length) {
-    throw new Error("All defined networks must have unique key names.")
-  }
 
   const wagmiAdapter = new WagmiAdapter({
     networks: allChainsOrdered as AppKitNetwork[],

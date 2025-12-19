@@ -34,7 +34,7 @@ export type ZkSyncNetwork = {
    *
    * If the network is an L1, simply set to true
    */
-  l1Network: L1Network | true
+  // l1Network: L1Network | true
   testnet: boolean
   /**
    * Primarily for Gateway, this defines
@@ -66,6 +66,10 @@ export type NetworkGroup = {
    * If true, this group won't be shown in the UI selector
    */
   hidden?: boolean
+  /**
+   * The L1 network ZKsync Networks are connected to.
+   */
+  l1Network: L1Network
 }
 
 export type NetworkGroups = Record<string, NetworkGroup>

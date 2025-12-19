@@ -61,8 +61,6 @@
 </template>
 
 <script setup lang="ts">
-import type { Token } from "~/stores/bridge/tokens"
-
 interface Props {
   token: Token
   networkId: number

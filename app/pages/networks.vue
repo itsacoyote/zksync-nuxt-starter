@@ -69,22 +69,6 @@
                 </div>
               </div>
             </div>
-            <div
-              v-if="typeof network.l1Network === 'object'"
-              class="ml-4"
-            >
-              <div><strong>Id: </strong>{{ network.l1Network.id }}</div>
-              <div><strong>L1:</strong> {{ network.l1Network.name }}</div>
-              <div>
-                <strong>Block Explorer URL:</strong> <UiLink
-                  target="_blank"
-                  class="underline text-blue-700"
-                  :href="network.l1Network.blockExplorers.default?.url ?? '/#'"
-                >
-                  {{ network.l1Network.blockExplorers.default?.url ?? "undefined" }}
-                </UiLink>
-              </div>
-            </div>
           </li>
         </ul>
       </UiCard>

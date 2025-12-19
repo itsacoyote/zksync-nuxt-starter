@@ -2,19 +2,9 @@ import { useQueries } from "@tanstack/vue-query"
 import { flatMap } from "es-toolkit"
 import { uniqBy } from "es-toolkit/array"
 
-export interface Token {
-  l2Address: `0x${string}`
-  l1Address: `0x${string}`
-  symbol: string
-  name: string
-  decimals: string
-  usdPrice: number
-  liquidity: number
-  iconURL: string
-  l1Token?: boolean
-  amount?: bigint
-  usdBalance?: number
-}
+import type { L1TokenForBalance } from "~~/app/utils/token-fetching"
+import { fetchL1BalancesViaAnkr, fetchL1BalancesViaRpc } from "~~/app/utils/token-fetching"
+import type { Token } from "~~/shared/types/token"
 
 interface TokensResponse {
   items: Token[]
@@ -57,7 +47,7 @@ interface AnkrTokenBalance {
 
 export const useTokensStore = defineStore("bridgeTokens", () => {
   const networkStore = useNetworkStore()
-  const { zkSyncNetworks } = storeToRefs(networkStore)
+  const { zkSyncNetworks, l1Network } = storeToRefs(networkStore)
 
   const fetchTokens = async (blockExplorerApiUrl: string): Promise<Token[]> => {
     const urls = [
@@ -133,54 +123,80 @@ export const useTokensStore = defineStore("bridgeTokens", () => {
 
   const assetResults = useQueries({ queries: assetQueries })
 
-  // L1 token balance queries using Ankr
+  /**
+   * L1 Token Balance Queries
+   *
+   * Fetches L1 token balances using one of two methods:
+   * 1. Ankr API (preferred) - Fast batch API call if NUXT_PUBLIC_ANKR_TOKEN is configured
+   * 2. RPC Fallback - Direct RPC calls via wagmi if Ankr token is not available
+   *
+   * Why conditional?
+   * - Ankr requires an API key but provides fast batch fetching with USD values
+   * - RPC works without dependencies but requires individual calls per token
+   *
+   * Data Flow:
+   * 1. Check if Ankr token is configured
+   * 2a. If Ankr: Call Ankr API with wallet address and network
+   * 2b. If RPC: Extract L1 tokens from L2 token metadata, then fetch balances via wagmi
+   * 3. Return standardized L1TokenBalance[] format for enrichment pipeline
+   */
   const l1TokenQueries = computed(() => {
-    if (!account.address.value) return []
+    // Early return if no wallet connected or no L1 network configured
+    if (!account.address.value || !l1Network.value) return []
 
-    return networkStore.l1Networks.map((l1Network) => {
-      return {
+    // Check if Ankr API token is available
+    const runtimeConfig = useRuntimeConfig()
+    const ankrToken = runtimeConfig.public.ankrToken
+    const useAnkr = !!(ankrToken && ankrToken !== "")
+
+    return [
+      {
+        // Query key includes source (ankr/rpc) for debugging and cache separation
         queryKey: [
-          "ankr",
+          useAnkr ? "ankr" : "rpc",
           "l1-tokens",
-          l1Network.id,
+          l1Network.value.id,
           account.address,
         ],
         queryFn: async () => {
-          const runtimeConfig = useRuntimeConfig()
-          const ankrToken = runtimeConfig.public.ankrToken
+          if (useAnkr) {
+            // Method 1: Ankr API - Single batch call for all L1 tokens
+            return await fetchL1BalancesViaAnkr(
+              l1Network.value.id,
+              account.address.value!,
+              ankrToken,
+            )
+          } else {
+            // Method 2: RPC Fallback - Individual calls per token
 
-          if (!ankrToken || ankrToken === "") return []
+            // Extract L1 tokens from L2 token metadata
+            // Why? RPC needs: l1Address (for contract calls), decimals + usdPrice (for USD calculation)
+            const allTokens = results.value.flatMap(r => r?.data ?? [])
+            const l1TokensWithMetadata: L1TokenForBalance[] = uniqBy(allTokens.filter(token => token.l1Address),
+              token => token.l1Address).map(token => ({
+              l1Address: token.l1Address, // Contract address to query
+              decimals: token.decimals, // For converting raw balance to decimal
+              usdPrice: token.usdPrice, // For calculating USD value
+            }))
 
-          const NETWORK_ID_TO_ANKR: Record<number, "eth" | "eth_sepolia"> = {
-            1: "eth",
-            11155111: "eth_sepolia",
+            // Skip RPC calls if no L1 tokens found
+            if (l1TokensWithMetadata.length === 0) return []
+
+            // Fetch balances via wagmi (handles both native ETH and ERC20 tokens)
+            const { wagmiAdapter } = useConnectorConfig()
+            return await fetchL1BalancesViaRpc(
+              l1TokensWithMetadata,
+              account.address.value!,
+              l1Network.value.id,
+              wagmiAdapter.wagmiConfig,
+            )
           }
-
-          const ankrBlockchain = NETWORK_ID_TO_ANKR[l1Network.id]
-          if (!ankrBlockchain) return []
-
-          const { AnkrProvider } = await import("@ankr.com/ankr.js")
-          const ankrProvider = new AnkrProvider(`https://rpc.ankr.com/multichain/${ankrToken}`)
-
-          const response = await ankrProvider.getAccountBalance({
-            blockchain: [ ankrBlockchain ],
-            walletAddress: account.address.value!,
-            onlyWhitelisted: false,
-          })
-
-          return response.assets.map(asset => ({
-            contractAddress: asset.contractAddress
-              ? (asset.contractAddress as `0x${string}`)
-              : null,
-            balance: BigInt(asset.balanceRawInteger),
-            balanceUsd: asset.balanceUsd,
-          }))
         },
         enabled: !!account.address.value,
-        staleTime: Infinity,
-        retry: false,
-      }
-    })
+        staleTime: Infinity, // Cache indefinitely (only refetch on wallet/network change)
+        retry: useAnkr ? false : true, // Retry RPC calls on failure, don't retry Ankr (likely API key issue)
+      },
+    ]
   })
 
   const l1TokenResults = useQueries({ queries: l1TokenQueries })
@@ -215,9 +231,9 @@ export const useTokensStore = defineStore("bridgeTokens", () => {
       token => token.l1Address)
 
     // Add L1 tokens as a separate group at the beginning if available
-    if (l1Tokens.length > 0 && networkStore.activeNetworkL1) {
+    if (l1Tokens.length > 0 && l1Network.value) {
       networkGroups.unshift({
-        network: networkStore.activeNetworkL1,
+        network: l1Network.value,
         tokens: l1Tokens.map(token => ({ ...token, l1Token: true })),
         isLoading: false,
         isError: false,
@@ -250,19 +266,19 @@ export const useTokensStore = defineStore("bridgeTokens", () => {
     // L1 Ankr balance lookup map: networkId -> { l1Address -> balance }
     const ankrBalancesByNetwork = new Map<number, Record<string, AnkrTokenBalance>>()
 
-    networkStore.l1Networks.forEach((network, index) => {
-      const result = l1TokenResults.value[index]
+    if (l1Network.value) {
+      const result = l1TokenResults.value[0]
       if (result?.data) {
         const balanceMap = result.data.reduce((acc, balance) => {
           // Native ETH has null contractAddress, normalize to 0x000...
           const address = balance.contractAddress
-            || "0x0000000000000000000000000000000000000000"
+            || L1_ETH_ADDRESS
           acc[address.toLowerCase()] = balance
           return acc
         }, {} as Record<string, AnkrTokenBalance>)
-        ankrBalancesByNetwork.set(network.id, balanceMap)
+        ankrBalancesByNetwork.set(l1Network.value.id, balanceMap)
       }
-    })
+    }
 
     // Enrich tokens with balance data
     return baseTokensByNetwork.value.map((group) => {

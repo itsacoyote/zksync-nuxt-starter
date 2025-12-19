@@ -135,8 +135,6 @@
 </template>
 
 <script setup lang="ts">
-import type { Token } from "~/stores/bridge/tokens"
-
 const emit = defineEmits<{ tokenSelected: [{ token: Token, networkId: number }] }>()
 
 const tokensStore = useTokensStore()
@@ -234,7 +232,6 @@ watch(
 )
 
 function selectToken(token: Token, networkId: number) {
-  console.log("SELECTED", networkId)
   selectedTokenNetworkId.value = networkId
   selectedToken.value = token
   emit("tokenSelected", { token, networkId })

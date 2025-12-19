@@ -28,11 +28,9 @@ The project uses Nuxt 4 with Vue 3 and integrates ZKsync-specific features inclu
 
 - Use viem, not ethers library. (https://viem.sh/docs/getting-started)
 - When using zksync-js, use viem. (https://matter-labs.github.io/zksync-js/latest/overview/index.html)
-- Use wagmi for wallet management (https://wagmi.sh/react/getting-started)
-
-### State Management (Pinia Stores)
-
-Located in `app/stores/`
+- Use wagmi for wallet management (https://wagmi.sh/vue/getting-started)
+- Use wagmi/core for contracts (https://wagmi.sh/core/getting-started)
+- Use tanstack query for fetching (https://tanstack.com/query/latest/docs/framework/vue/overview)
 
 ### Auto-imports
 
@@ -43,11 +41,9 @@ Nuxt auto-imports from:
 - Wagmi Vue composables (pre-configured in `nuxt.config.ts`)
 - Reown AppKit composables (pre-configured in `nuxt.config.ts`)
 
-### Component Structure
+### General Instructions
 
 - Components are organized by domain
 - Use DaisyUI first, then reka-ui for more complex UI components. Don't worry about trying to match styling, I will update styling.
-
-### Type Definitions
-
-Custom types in `shared/types/`
+- Write out a plan and ask any questions to clarify the implementation before implementing
+- Check types and make sure to fix any type errors at the end of implementation
