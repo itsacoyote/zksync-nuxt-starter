@@ -1,6 +1,6 @@
 import { zksync, zksyncSepoliaTestnet } from "@wagmi/core/chains"
 
-import type { ZkSyncNetwork } from "../shared/types/networks.d"
+import type { ZkSyncNetwork } from "~~/shared/types/networks.d"
 
 export const zksyncMainnet: ZkSyncNetwork = {
   ...zksync,

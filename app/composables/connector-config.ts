@@ -4,7 +4,7 @@ import type { AppKitNetwork } from "@reown/appkit-common"
 import { pull } from "es-toolkit/array"
 import { zksyncSsoConnector } from "zksync-sso-wagmi-connector"
 
-import { customAppKitConfig, customMetadata } from "~~/custom/app-config"
+import { customAppKitConfig, customMetadata } from "~~/app-configuration/app-config"
 import type { NetworkGroup, ZkSyncNetwork } from "~~/shared/types/networks"
 
 const metadata = customMetadata ?? {

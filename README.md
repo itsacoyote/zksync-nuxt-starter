@@ -96,7 +96,7 @@ npm run lint:fix         # Fix linting issues
 
 ### Network Configuration
 
-Edit `custom/app-config.ts` to customize:
+Edit `app-configuration/app-config.ts` to customize:
 
 - Available network groups (Mainnet, Testnet, Local)
 - Default network on app load

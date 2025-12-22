@@ -1,4 +1,4 @@
-import type { ZkSyncNetwork } from "../shared/types/networks.d"
+import type { ZkSyncNetwork } from "~~/shared/types/networks.d"
 
 // ZKsync OS Server local network
 export const zksyncOS: ZkSyncNetwork = {

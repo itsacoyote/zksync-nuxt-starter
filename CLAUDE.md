@@ -47,3 +47,4 @@ Nuxt auto-imports from:
 - Use DaisyUI first, then reka-ui for more complex UI components. Don't worry about trying to match styling, I will update styling.
 - Write out a plan and ask any questions to clarify the implementation before implementing
 - Check types and make sure to fix any type errors at the end of implementation
+- Use `~~` to reference the project root for imports, `~` for `./app`

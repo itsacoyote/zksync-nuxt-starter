@@ -1,6 +1,6 @@
-import { customDefaultGroupKey, customNetworkGroups } from "~~/custom/app-config"
-import { l1Mainnet, l1Sepolia } from "~~/networks/l1"
-import { zksyncMainnet, zksyncSepolia } from "~~/networks/zksync"
+import { customDefaultGroupKey, customNetworkGroups } from "~~/app-configuration/app-config"
+import { l1Mainnet, l1Sepolia } from "~~/app-configuration/networks/l1"
+import { zksyncMainnet, zksyncSepolia } from "~~/app-configuration/networks/zksync"
 import type { NetworkGroups } from "~~/shared/types/networks"
 
 const defaultNetworkGroups: NetworkGroups = {

@@ -1,11 +1,11 @@
 import {
   l1Anvil, l1Mainnet, l1Sepolia,
-} from "~~/networks/l1"
+} from "~~/app-configuration/networks/l1"
 
-import { zksyncOS } from "../networks/local"
+import { zksyncOS } from "../app-configuration/networks/local"
 import {
   zksyncGateway, zksyncGatewayTestnet, zksyncMainnet, zksyncSepolia, zksyncStaging,
-} from "../networks/zksync"
+} from "../app-configuration/networks/zksync"
 import type { NetworkGroups } from "../shared/types/networks"
 
 export const customNetworkGroups = {
