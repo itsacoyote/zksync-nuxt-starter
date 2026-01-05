@@ -1,6 +1,9 @@
 <!-- eslint-disable @stylistic/max-len -->
 <template>
-  <Select.Root v-model="networkStore.activeNetwork.id">
+  <Select.Root
+    :model-value="networkStore.activeNetwork.id"
+    @update:model-value="(val) => $emit('selectNetwork', val)"
+  >
     <Select.Trigger
       class="select w-full outline-none! cursor-pointer"
       aria-label="Customise options"
@@ -19,7 +22,7 @@
         align="end"
       >
         <Select.ScrollUpButton class="flex items-center justify-center h-[32px] bg-white cursor-default text-neutral-600">
-          <Icon name="fluent:chevron-up-16-regular" />
+          <UiIconChevronUp />
         </Select.ScrollUpButton>
 
         <Select.Viewport class="px-2">
@@ -33,10 +36,9 @@
               class="cursor-pointer text-base rounded-field pl-6 pr-4 py-2 text-base-content flex items-center relative select.-none data-[highlighted]:outline-none data-[highlighted]:bg-base-200 data-[highlighted]:text-base-content"
               :value="network.id"
               :class="{ 'font-bold': network.id === networkStore.activeNetwork.id }"
-              @select="$emit('selectNetwork', network.id)"
             >
               <Select.ItemIndicator class="absolute left-0 w-[25px] inline-flex items-center justify-center">
-                <Icon name="fluent:checkmark-16-regular" />
+                <UiIconCheckmark />
               </Select.ItemIndicator>
               <Select.ItemText>
                 <img

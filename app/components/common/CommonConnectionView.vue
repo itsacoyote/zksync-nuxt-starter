@@ -16,10 +16,7 @@
       role="alert"
       class="alert alert-vertical sm:alert-horizontal"
     >
-      <Icon
-        name="fluent:wallet-16-regular"
-        class="text-2xl"
-      />
+      <UiIconWallet class="text-2xl" />
       <span>Connect wallet to see details.</span>
       <div>
         <AccountConnectButton />

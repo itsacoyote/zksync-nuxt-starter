@@ -1,6 +1,6 @@
 <template>
   <button
-    class="btn"
+    class="btn btn-outline btn-secondary"
     @click="tokenSelectModal?.showModal()"
   >
     <template v-if="selectedToken">
@@ -15,19 +15,26 @@
     <template v-else>
       Select token
     </template>
-    <Icon name="fluent:chevron-down-24-filled" />
+    <UiIconChevronDown />
   </button>
   <dialog
     ref="token-select-modal"
     class="modal modal-bottom sm:modal-middle"
   >
     <div class="modal-box flex flex-col">
-      <h3 class="font-bold text-lg mb-4">
-        Select a token
-      </h3>
+      <div class="flex flex-row justify-between">
+        <h3 class="font-bold text-lg mb-4">
+          Select a token
+        </h3>
+        <form method="dialog">
+          <button class="btn btn-ghost btn-circle">
+            <UiIconClose />
+          </button>
+        </form>
+      </div>
       <div class="flex gap-2 mb-4">
         <label class="input input-bordered flex items-center gap-2 flex-1">
-          <Icon name="fluent:search-24-filled" />
+          <UiIconSearch />
           <input
             v-model="searchQuery"
             type="text"
@@ -189,4 +196,9 @@ function selectToken(token: Token) {
   tokenSelectModal.value?.close()
   searchQuery.value = ""
 }
+
+// Reset selected token when network changes
+watch(() => props.networkId, () => {
+  selectedToken.value = null
+})
 </script>

@@ -111,7 +111,14 @@ export const useNetworkStore = defineStore("network", () => {
     if (networkId === l1Network.value.id) {
       return "L1"
     }
-    if (getNetworkById(networkId).nativeTokenBridgingOnly) {
+
+    const network = getNetworkById(networkId)
+    if (!network) {
+      console.warn(`Network ${networkId} not found in current group, defaulting to L2`)
+      return "L2"
+    }
+
+    if (network.nativeTokenBridgingOnly) {
       return "Gateway"
     } else {
       return "L2"

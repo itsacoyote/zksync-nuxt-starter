@@ -4,65 +4,90 @@
       {{ $t("bridge.header") }}
     </LayoutPageHeader>
 
-    <UiSection class="max-w-[550px] m-auto">
-      <UiCard>
-        <div class="flex flex-row items-center gap-2">
-          <strong>From: </strong>
-          <select
+    <UiSection class="max-w-[650px] m-auto">
+      <UiCard class="relative z-0">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-2 mb-4">
+          <BridgeNetworkTransferSelect
             v-model="fromNetworkId"
-            class="select"
+            :networks="networkList"
+            label="From"
+            class="w-full md:w-[45%]"
+          />
+          <button
+            class="btn btn-ghost btn-circle flex items-center justify-center flex-shrink-0"
+            @click="bridgeStore.swapNetworks"
           >
-            <option
-              :value="null"
-              disabled
-            >
-              Select a network
-            </option>
-            <option
-              v-for="(network) in networkList"
-              :key="network.id"
-              :value="network.id"
-            >
-              {{ network.name }}
-            </option>
-          </select>
+            <Icon
+              name="fluent:arrow-right-32-filled"
+              class="text-sm hidden md:block"
+            />
+            <Icon
+              name="fluent:arrow-down-32-filled"
+              class="text-sm md:hidden block"
+            />
+          </button>
+          <BridgeNetworkTransferSelect
+            v-model="toNetworkId"
+            :networks="toNetworkList"
+            label="To"
+            class="w-full md:w-[45%]"
+          />
         </div>
 
-        <div class="my-2 flex flex-row items-center gap-2">
+        <div class="my-2 flex flex-row items-center gap-2 justify-between">
           <input
+            id="transfer-amount"
             v-model="transferAmount"
             type="number"
-            class="input input-ghost input-xl"
+            class="input input-ghost input-sm text-2xl"
             placeholder="0"
           >
           <CommonSelectTokenFromNetworkModal
             :network-id="fromNetworkId"
-            @token-selected="selectToken"
+            @token-selected="tokenToTransfer = $event"
           />
         </div>
-
-        <div class="flex flex-row items-center gap-2">
-          <strong>To: </strong>
-          <select
-            v-model="toNetworkId"
-            class="select"
-          >
-            <option
-              :value="null"
-              disabled
+        <div
+          v-if="formattedBalance"
+          class="flex justify-between text-sm opacity-70"
+        >
+          <div>
+            Balance: {{ formattedBalance }}
+          </div>
+          <div class="flex flex-row gap-2">
+            <button
+              class="badge badge-sm cursor-pointer hover:font-semibold"
+              @click="setPercentageAmount(25)"
             >
-              Select a network
-            </option>
-            <option
-              v-for="(network) in toNetworkList"
-              :key="network.id"
-              :value="network.id"
+              25%
+            </button>
+            <button
+              class="badge badge-sm cursor-pointer hover:font-semibold"
+              @click="setPercentageAmount(50)"
             >
-              {{ network.name }}
-            </option>
-          </select>
+              50%
+            </button>
+            <button
+              class="badge badge-sm cursor-pointer hover:font-semibold"
+              @click="setPercentageAmount(75)"
+            >
+              75%
+            </button>
+            <button
+              class="badge badge-sm cursor-pointer hover:font-semibold"
+              @click="setPercentageAmount(100)"
+            >
+              MAX
+            </button>
+          </div>
         </div>
       </UiCard>
+
+      <!-- Fee Information Card -->
+      <BridgeFeeCard
+        v-if="isConnected && tokenToTransfer"
+        class="mt-4"
+      />
       <div class="mt-4">
         <AccountConnectButton
           v-if="!isConnected && !connecting"
@@ -70,10 +95,11 @@
         />
         <template v-else>
           <button
-            class="btn btn-xl w-full"
-            :disabled="buttonState.disabled"
+            class="btn btn-xl w-full capitalize"
+            :class="{ 'btn-primary': !bridgeActionState.disabled }"
+            :disabled="bridgeActionState.disabled"
           >
-            {{ buttonState.message }}
+            {{ bridgeActionState.message }}
           </button>
         </template>
       </div>
@@ -82,41 +108,33 @@
 </template>
 
 <script setup lang="ts">
-import { useBridgeStore } from "~/stores/bridge/bridge"
-
 const { isConnected, connecting } = storeToRefs(useConnectorStore())
 
+const bridgeStore = useBridgeStore()
 const {
   fromNetworkId,
   toNetworkId,
   transferAmount,
   networkList,
   tokenToTransfer,
-  transferType,
-} = storeToRefs(useBridgeStore())
+} = storeToRefs(bridgeStore)
 
-// Filter out the selected "from" network from the "to" network list
-const toNetworkList = computed(() => {
-  const currentFromId = fromNetworkId.value
+const {
+  toNetworkList,
+  formattedBalance,
+  bridgeActionState,
+} = useBridge()
 
-  return networkList.value.filter(network => network.id !== currentFromId)
+const { setPercentageAmount } = useBridgeFee()
+
+// Start auto-refresh when bridge page mounts
+const bridgeRefreshStore = useBridgeRefreshStore()
+onMounted(() => {
+  bridgeRefreshStore.startAutoRefresh()
 })
 
-function selectToken(token: Token) {
-  tokenToTransfer.value = token
-}
-
-const buttonState = computed(() => {
-  if (!tokenToTransfer.value) {
-    return { message: "Select a token", disabled: true }
-  } else if (!transferAmount.value || transferAmount.value <= 0) {
-    return { message: "Enter an amount", disabled: true }
-  } else if (!toNetworkId.value) {
-    return { message: "Select destination", disabled: true }
-  } else if (transferType.value) {
-    return { message: `${transferType.value} token`, disabled: false }
-  } else {
-    return { message: "Cannot bridge", disabled: true }
-  }
+// Stop auto-refresh when bridge page unmounts
+onUnmounted(() => {
+  bridgeRefreshStore.stopAutoRefresh()
 })
 </script>

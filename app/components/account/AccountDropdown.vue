@@ -12,9 +12,8 @@
         :src="connections[0]?.connector.icon"
         class="h-6 w-6"
       />
-      <Icon
+      <UiIconWallet
         v-else
-        name="fluent:wallet-20-regular"
         class="h-6 w-6"
       />
       {{ ensAccount && ensAccount.name ? ensAccount.name : formatShortAddress(address) }}

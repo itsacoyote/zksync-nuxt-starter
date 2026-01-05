@@ -21,7 +21,7 @@
     <template v-else>
       Select token
     </template>
-    <Icon name="fluent:chevron-down-24-filled" />
+    <UiIconChevronDown />
   </button>
   <dialog
     ref="token-select-modal"
@@ -33,7 +33,7 @@
       </h3>
       <div class="flex gap-2 mb-4">
         <label class="basis-1/2 input input-bordered flex items-center gap-2 flex-1">
-          <Icon name="fluent:search-24-filled" />
+          <UiIconSearch />
           <input
             v-model="searchQuery"
             type="text"

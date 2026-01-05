@@ -11,8 +11,7 @@
         :href="`${blockExplorerUrl}/tx/${transfer.transactionHash}`"
         class="btn btn-circle btn-soft group"
       >
-        <Icon
-          name="fluent:open-32-filled"
+        <UiIconOpenLink
           class="text-xl text-base-content/60 group-hover:text-base-content"
         />
       </NuxtLink>
@@ -21,8 +20,7 @@
         disabled
         className="cursor-not-allowed"
       >
-        <Icon
-          name="fluent:open-32-filled"
+        <UiIconOpenLink
           class="text-xl text-base-content/40"
         />
       </button>

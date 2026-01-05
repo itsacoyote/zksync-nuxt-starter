@@ -44,7 +44,10 @@ export default withNuxt({
     "@stylistic/max-len": [
       "error",
       {
-        code: 120, ignoreStrings: true, ignoreTemplateLiterals: true,
+        code: 120,
+        ignoreStrings: true,
+        ignoreTemplateLiterals: true,
+        ignorePattern: "class=\".*\"",
       },
     ],
     "@stylistic/no-floating-decimal": "error",

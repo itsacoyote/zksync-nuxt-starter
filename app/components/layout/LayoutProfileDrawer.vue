@@ -23,7 +23,7 @@
             class="btn btn-circle btn-ghost"
             @click="appState.toggleProfileDrawer()"
           >
-            <Icon name="fluent:dismiss-16-filled" />
+            <UiIconClose />
           </button>
         </li>
         <li>
@@ -35,9 +35,8 @@
                   :src="connections[0]!.connector.icon"
                   class="h-6 w-6 inline-block"
                 />
-                <Icon
+                <UiIconWallet
                   v-else
-                  name="fluent:wallet-20-regular"
                   class="h-6 w-6 align-middle"
                 />
                 <span

@@ -24,7 +24,7 @@
               class="btn btn-circle btn-ghost"
               @click="appState.toggleMenuDrawer(false)"
             >
-              <Icon name="fluent:dismiss-16-filled" />
+              <UiIconClose />
             </button>
           </li>
         </ul>

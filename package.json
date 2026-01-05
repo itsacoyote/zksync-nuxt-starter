@@ -43,6 +43,7 @@
     "nuxt-svgo": "^4.2.5",
     "pinia": "^3.0.3",
     "reka-ui": "^2.4.1",
+    "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.8.3",
     "viem": "^2.33.1",
